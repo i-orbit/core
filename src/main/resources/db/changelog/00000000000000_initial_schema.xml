@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="000000000000001" author="inmaytide">
+        <createTable tableName="file_metadata" remarks="文件库文件基础信息">
+            <column name="id" type="bigint" remarks="唯一标识">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(200)" remarks="文件名称(不包含扩展名)"/>
+            <column name="extension" type="varchar(10)" remarks="文件类型"/>
+            <column name="size" type="bigint" remarks="文件大小(bytes)"/>
+            <column name="address" type="varchar(200)" remarks="文件存储地址"/>
+            <column name="thumbnailAddress" type="varchar(200)" remarks="图片/视频文件缩略图存储地址"/>
+            <column name="sha256" type="varchar(50)" remarks="文件SHA256值"/>
+            <column name="verified" type="varchar(2)" remarks="验证标识"/>
+            <column name="deleted" type="varchar(2)" remarks="删除标识"/>
+            <column name="delete_time" type="timestamp" remarks="删除时间"/>
+        </createTable>
+        <createTable tableName="file_association" remarks="文件库文件引用关联信息">
+            <column name="id" type="bigint" remarks="唯一标识">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="file_id" type="bigint" remarks="文件库文件信息唯一标识"/>
+            <column name="business" type="varchar(50)" remarks="业务类型"/>
+            <column name="business_data_id" type="bigint" remarks="关联业务对象唯一标识"/>
+            <column name="business_data_description" type="varchar(200)" remarks="关联业务对象说明"/>
+            <column name="created_time" type="timestamp" remarks="创建时间"/>
+            <column name="created_by" type="bigint" remarks="创建人"/>
+            <column name="modified_time" type="timestamp" remarks="最后修改时间"/>
+            <column name="modified_by" type="bigint" remarks="最后修改人"/>
+            <column name="deleted" type="varchar(2)" remarks="逻辑删除标识" defaultValue="N">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="int" remarks="版本"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="000000000000002" author="inmaytide">
+        <createTable tableName="dictionary_category" remarks="数据字典分类">
+            <column name="id" type="bigint" remarks="唯一标识">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="code" type="varchar(50)" remarks="分类编码">
+                <constraints unique="true"/>
+            </column>
+            <column name="name" type="varchar(50)" remarks="分类名称"/>
+            <column name="max_depth" type="int" remarks="对应数据字典树最大层级"/>
+            <column name="allow_changes" type="varchar(2)" remarks="数据字典是否允许修改"/>
+            <column name="disabled" type="varchar(2)" remarks="是否禁用"/>
+            <column name="sequence" type="int" remarks="排序字段"/>
+        </createTable>
+        <createTable tableName="dictionary" remarks="数据字典">
+            <column name="id" type="bigint" remarks="唯一标识">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="category" type="varchar(50)" remarks="分类编码"/>
+            <column name="code" type="varchar(50)" remarks="字典编码"/>
+            <column name="name" type="varchar(50)" remarks="字典名称"/>
+            <column name="source" type="varchar(10)" remarks="来源"/>
+            <column name="parent" type="varchar(50)" remarks="上级字典编码" defaultValue="ROOT"/>
+            <column name="option_value" type="varchar(50)" remarks="数据字典作为下拉选项时的VALUE值, 为空时取字典编码值"/>
+            <column name="sharing" type="varchar(10)" remarks="共享级别"/>
+            <column name="sequence" type="int" remarks="排序字段"/>
+            <column name="tenant_id" type="bigint" remarks="所属租户"/>
+            <column name="area_id" type="bigint" remarks="所属区域"/>
+            <column name="organization_id" type="bigint" remarks="所属组织"/>
+        </createTable>
+        <addUniqueConstraint tableName="dictionary" columnNames="category, code"/>
+    </changeSet>
+
+</databaseChangeLog>

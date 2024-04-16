@@ -1,0 +1,19 @@
+package com.inmaytide.orbit.core.service;
+
+import com.inmaytide.orbit.commons.business.BasicService;
+import com.inmaytide.orbit.commons.domain.dto.result.TreeNode;
+import com.inmaytide.orbit.core.domain.Dictionary;
+
+import java.util.List;
+
+/**
+ * @author inmaytide
+ * @since 2024/4/16
+ */
+public interface DictionaryService extends BasicService<Dictionary> {
+
+    List<TreeNode<Dictionary>> treeByCategory(String category);
+
+    List<Dictionary> listByCategory(String category);
+
+}
