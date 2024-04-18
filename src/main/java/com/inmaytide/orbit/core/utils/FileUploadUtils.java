@@ -184,7 +184,7 @@ public class FileUploadUtils {
     private static Path generateThumbnailForVideo(Path file) {
         FileUploaderProperties.Thumbnail configuration = getThumbnail();
         try (FFmpegFrameGrabber grabber = FFmpegFrameGrabber.createDefault(file.toFile()); OpenCVFrameConverter.ToIplImage converter = new OpenCVFrameConverter.ToIplImage()) {
-            Path res = Files.createTempFile(CodecUtils.randomUUID(), configuration.getOutputFormat());
+            Path res = Files.createTempFile(CodecUtils.randomUUID(), "." + configuration.getOutputFormat());
             grabber.start();
             String rotate = grabber.getVideoMetadata("rotate");
             int len = grabber.getLengthInFrames();
@@ -222,8 +222,8 @@ public class FileUploadUtils {
     private static Path generateThumbnailForImage(Path file) {
         FileUploaderProperties.Thumbnail configuration = getThumbnail();
         try {
-            Path res = Files.createTempFile(CodecUtils.randomUUID(), configuration.getOutputFormat());
-            try (InputStream is = Files.newInputStream(file); OutputStream os = Files.newOutputStream(res, StandardOpenOption.CREATE_NEW)) {
+            Path res = Files.createTempFile(CodecUtils.randomUUID(), "." + configuration.getOutputFormat());
+            try (InputStream is = Files.newInputStream(file); OutputStream os = Files.newOutputStream(res, StandardOpenOption.WRITE)) {
                 BufferedImage thumbnail = Thumbnails.of(is)
                         .size(configuration.getWidth(), configuration.getHeight())
                         .outputQuality(configuration.getOutputQuality())

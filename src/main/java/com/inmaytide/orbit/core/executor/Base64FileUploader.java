@@ -32,7 +32,7 @@ public class Base64FileUploader implements FileUploader {
     @Override
     public FileMetadata call() throws Exception {
         String extension = FilenameUtils.getExtension(content.getName());
-        Path file = Files.createTempFile(CodecUtils.randomUUID(), extension);
+        Path file = Files.createTempFile(CodecUtils.randomUUID(), "." + extension);
         Files.write(file, Base64.getDecoder().decode(content.getFile()), StandardOpenOption.CREATE_NEW);
         return upload(content.getName(), file);
     }

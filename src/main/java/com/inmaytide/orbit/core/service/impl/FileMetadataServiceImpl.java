@@ -23,6 +23,9 @@ public class FileMetadataServiceImpl extends BasicServiceImpl<FileMetadataMapper
     public FileMetadata persist(Future<FileMetadata> future) {
         try {
             FileMetadata entity = future.get();
+            if (entity.getId() != null) {
+                return entity;
+            }
             return create(entity);
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);

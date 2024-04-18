@@ -3,8 +3,30 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
-
     <changeSet id="000000000000001" author="inmaytide">
+        <createTable tableName="operation_log" remarks="用户操作日志">
+            <column name="id" type="bigint" remarks="唯一标识">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="tenant_id" type="bigint" remarks="所属租户"/>
+            <column name="operator" type="bigint" remarks="操作人"/>
+            <column name="operation_time" type="timestamp" remarks="操作时间"/>
+            <column name="result" type="varchar(16)" remarks="操作结果"/>
+            <column name="client_description" type="varchar(512)" remarks="客户端描述"/>
+            <column name="ip_address" type="varchar(128)" remarks="IP地址(归属地)"/>
+            <column name="service" type="varchar(32)" remarks="微服务名称"/>
+            <column name="business" type="varchar(64)" remarks="业务描述"/>
+            <column name="description" type="varchar(128)" remarks="操作描述"/>
+            <column name="arguments" type="text" remarks="请求参数"/>
+            <column name="response" type="text" remarks="响应内容/错误描述"/>
+            <column name="chain" type="varchar(64)" remarks="接口调用链标识"/>
+            <column name="platform" type="varchar(8)" remarks="客户端平台"/>
+            <column name="path" type="varchar(512)" remarks="请求地址"/>
+            <column name="http_method" type="varchar(8)" remarks="HttpMethod"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="000000000000002" author="inmaytide">
         <createTable tableName="file_metadata" remarks="文件库文件基础信息">
             <column name="id" type="bigint" remarks="唯一标识">
                 <constraints primaryKey="true"/>
@@ -13,10 +35,10 @@
             <column name="extension" type="varchar(10)" remarks="文件类型"/>
             <column name="size" type="bigint" remarks="文件大小(bytes)"/>
             <column name="address" type="varchar(200)" remarks="文件存储地址"/>
-            <column name="thumbnailAddress" type="varchar(200)" remarks="图片/视频文件缩略图存储地址"/>
-            <column name="sha256" type="varchar(50)" remarks="文件SHA256值"/>
+            <column name="thumbnail_address" type="varchar(200)" remarks="图片/视频文件缩略图存储地址"/>
+            <column name="sha256" type="varchar(100)" remarks="文件SHA256值"/>
             <column name="verified" type="varchar(2)" remarks="验证标识"/>
-            <column name="deleted" type="varchar(2)" remarks="删除标识"/>
+            <column name="deleted" type="varchar(2)" remarks="删除标识" defaultValue="N"/>
             <column name="delete_time" type="timestamp" remarks="删除时间"/>
         </createTable>
         <createTable tableName="file_association" remarks="文件库文件引用关联信息">
@@ -38,7 +60,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="000000000000002" author="inmaytide">
+    <changeSet id="000000000000003" author="inmaytide">
         <createTable tableName="dictionary_category" remarks="数据字典分类">
             <column name="id" type="bigint" remarks="唯一标识">
                 <constraints primaryKey="true"/>

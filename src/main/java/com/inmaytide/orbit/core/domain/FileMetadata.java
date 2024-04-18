@@ -1,7 +1,7 @@
 package com.inmaytide.orbit.core.domain;
 
 import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.inmaytide.orbit.commons.constants.Is;
+import com.inmaytide.orbit.commons.constants.Bool;
 import com.inmaytide.orbit.commons.domain.pattern.Entity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -37,11 +37,11 @@ public class FileMetadata extends Entity {
     private String sha256;
 
     @Schema(title = "验证标识")
-    private Is verified;
+    private Bool verified;
 
     @Schema(title = "删除标识")
     @TableLogic(value = "'N'", delval = "'Y'")
-    private Is deleted;
+    private Bool deleted;
 
     @Schema(title = "删除时间")
     private Instant deleteTime;
@@ -98,19 +98,19 @@ public class FileMetadata extends Entity {
         this.sha256 = sha256;
     }
 
-    public Is getVerified() {
+    public Bool getVerified() {
         return verified;
     }
 
-    public void setVerified(Is verified) {
+    public void setVerified(Bool verified) {
         this.verified = verified;
     }
 
-    public Is getDeleted() {
+    public Bool getDeleted() {
         return deleted;
     }
 
-    public void setDeleted(Is deleted) {
+    public void setDeleted(Bool deleted) {
         this.deleted = deleted;
     }
 
@@ -134,7 +134,7 @@ public class FileMetadata extends Entity {
 
         private String sha256;
 
-        private Is verified;
+        private Bool verified;
 
         public FileMetadataBuilder filename(String filename) {
             this.filename = filename;
@@ -161,7 +161,7 @@ public class FileMetadata extends Entity {
             return this;
         }
 
-        public FileMetadataBuilder verified(Is verified) {
+        public FileMetadataBuilder verified(Bool verified) {
             this.verified = verified;
             return this;
         }
@@ -186,7 +186,7 @@ public class FileMetadata extends Entity {
             entity.setSize(size);
             entity.setAddress(address);
             entity.setThumbnailAddress(thumbnailAddress);
-            entity.setVerified(verified == null ? Is.N : verified);
+            entity.setVerified(verified == null ? Bool.N : verified);
             return entity;
         }
     }

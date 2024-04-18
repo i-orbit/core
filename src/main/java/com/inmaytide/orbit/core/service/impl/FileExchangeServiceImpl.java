@@ -24,6 +24,8 @@ import io.minio.http.Method;
 import io.minio.messages.Part;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FilenameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -49,6 +51,8 @@ import java.util.stream.IntStream;
  */
 @Service
 public class FileExchangeServiceImpl implements FileExchangeService {
+
+    private static final Logger log = LoggerFactory.getLogger(FileExchangeServiceImpl.class);
 
     private final ThreadPoolTaskExecutor executor;
 
@@ -96,7 +100,7 @@ public class FileExchangeServiceImpl implements FileExchangeService {
             res.setFileMetadata(exist.get());
             return res;
         }
-        String filename = params.getPath() + "/" + CodecUtils.generateRandomCode(16) + "." + FilenameUtils.getExtension(params.getFilename());
+        String filename = params.getPath() + "/" + CodecUtils.generateRandomString(32) + "." + FilenameUtils.getExtension(params.getFilename());
         CreateMultipartUploadResponse response = minioClient.createMultipartUpload(params.getBucket(), filename);
         res.setOriginalFilename(params.getFilename());
         res.setUploadId(response.result().uploadId());
@@ -165,6 +169,7 @@ public class FileExchangeServiceImpl implements FileExchangeService {
                 }
             }
         } catch (Exception e) {
+            log.error("下载文件{id = {}}失败, Cause by: ", id, e);
             throw new HttpResponseException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E_0x00300008, e);
         }
     }

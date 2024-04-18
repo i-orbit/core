@@ -12,6 +12,10 @@ import java.util.List;
  */
 public interface DictionaryService extends BasicService<Dictionary> {
 
+    String ROOT_CODE = "ROOT";
+
+    String SYMBOL = "DICTIONARY";
+
     List<TreeNode<Dictionary>> treeByCategory(String category);
 
     List<Dictionary> listByCategory(String category);

@@ -1,7 +1,7 @@
 package com.inmaytide.orbit.core.domain;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.inmaytide.orbit.commons.constants.Is;
+import com.inmaytide.orbit.commons.constants.Bool;
 import com.inmaytide.orbit.commons.domain.dto.result.TreeNode;
 import com.inmaytide.orbit.commons.domain.pattern.Entity;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,10 +25,10 @@ public class DictionaryCategory extends Entity {
     private Integer maxDepth;
 
     @Schema(title = "对应数据字典是否允许修改")
-    private Is allowChanges;
+    private Bool allowChanges;
 
     @Schema(title = "数据字典类别是否禁用", description = "主要用于有些项目对应的业务功能不需要，可禁用对应的字典类别")
-    private Is disabled;
+    private Bool disabled;
 
     @Schema(title = "排序字段")
     private Integer sequence;
@@ -61,19 +61,19 @@ public class DictionaryCategory extends Entity {
         this.maxDepth = maxDepth;
     }
 
-    public Is getAllowChanges() {
+    public Bool getAllowChanges() {
         return allowChanges;
     }
 
-    public void setAllowChanges(Is allowChanges) {
+    public void setAllowChanges(Bool allowChanges) {
         this.allowChanges = allowChanges;
     }
 
-    public Is getDisabled() {
+    public Bool getDisabled() {
         return disabled;
     }
 
-    public void setDisabled(Is disabled) {
+    public void setDisabled(Bool disabled) {
         this.disabled = disabled;
     }
 

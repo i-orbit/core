@@ -1,7 +1,7 @@
 package com.inmaytide.orbit.core.executor;
 
 import com.inmaytide.exception.web.BadRequestException;
-import com.inmaytide.orbit.commons.constants.Is;
+import com.inmaytide.orbit.commons.constants.Bool;
 import com.inmaytide.orbit.commons.utils.ApplicationContextHolder;
 import com.inmaytide.orbit.commons.utils.CodecUtils;
 import com.inmaytide.orbit.commons.utils.DatetimeUtils;
@@ -59,7 +59,7 @@ public interface FileUploader extends Callable<FileMetadata> {
         // 验证上传的文件大小是否超过限制
         long size = getAndValidateFileSize(file);
         String folder = DatetimeUtils.formatDateWithoutJoiner(Instant.now());
-        String randomName = CodecUtils.generateRandomCode(16);
+        String randomName = CodecUtils.generateRandomString(32);
         String thumbnailRandomName = null;
         FileUploadUtils.upload(getBucket(), MinioUtils.getObjectName(folder, randomName + "." + extension), file);
 
@@ -77,7 +77,7 @@ public interface FileUploader extends Callable<FileMetadata> {
                 .sha256(sha256)
                 .address(MinioUtils.getAddress(getBucket(), folder, randomName + "." + extension))
                 .thumbnailAddress(thumbnailRandomName == null ? null : MinioUtils.getAddress(getBucket(), folder, thumbnailRandomName))
-                .verified(Is.Y)
+                .verified(Bool.Y)
                 .build();
     }
 

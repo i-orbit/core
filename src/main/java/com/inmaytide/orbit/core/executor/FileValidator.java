@@ -1,7 +1,7 @@
 package com.inmaytide.orbit.core.executor;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.inmaytide.orbit.commons.constants.Is;
+import com.inmaytide.orbit.commons.constants.Bool;
 import com.inmaytide.orbit.commons.metrics.AbstractJob;
 import com.inmaytide.orbit.commons.utils.CodecUtils;
 import com.inmaytide.orbit.core.configuration.FileUploaderProperties;
@@ -62,7 +62,7 @@ public class FileValidator extends AbstractJob {
 
     @Override
     protected void exec(JobExecutionContext context) {
-        List<FileMetadata> list = fileMetadataMapper.selectList(Wrappers.lambdaQuery(FileMetadata.class).eq(FileMetadata::getVerified, Is.N));
+        List<FileMetadata> list = fileMetadataMapper.selectList(Wrappers.lambdaQuery(FileMetadata.class).eq(FileMetadata::getVerified, Bool.N));
         if (list.isEmpty()) {
             log.debug("系统中暂无未验证的文件信息");
             return;
@@ -76,7 +76,7 @@ public class FileValidator extends AbstractJob {
         String objectName = metadata.getAddress().substring(metadata.getAddress().indexOf("/") + 1);
         Path file;
         try {
-            file = Files.createTempFile(CodecUtils.randomUUID(), metadata.getExtension());
+            file = Files.createTempFile(CodecUtils.randomUUID(), "." + metadata.getExtension());
             DownloadObjectArgs args = DownloadObjectArgs.builder().filename(file.toAbsolutePath().toString()).bucket(bucket).object(objectName).build();
             minioClient.downloadObject(args).get();
         } catch (Exception e) {
@@ -94,8 +94,8 @@ public class FileValidator extends AbstractJob {
 
     private void onFailed(FileMetadata metadata, String bucket, String objectName) {
         log.debug("文件{id = {}}无效", metadata.getId());
-        metadata.setVerified(Is.Y);
-        metadata.setDeleted(Is.Y);
+        metadata.setVerified(Bool.Y);
+        metadata.setDeleted(Bool.Y);
         metadata.setDeleteTime(Instant.now());
         fileMetadataMapper.updateById(metadata);
         try {
@@ -108,7 +108,7 @@ public class FileValidator extends AbstractJob {
 
     private void onSuccess(FileMetadata metadata, Path file, String bucket, String objectName) {
         log.debug("文件{id = {}}验证成功", metadata.getId());
-        metadata.setVerified(Is.Y);
+        metadata.setVerified(Bool.Y);
         if (FileUploadUtils.isImage(metadata.getExtension()) || FileUploadUtils.isVideo(metadata.getExtension())) {
             try {
                 FileUploaderProperties.Thumbnail configuration = FileUploadUtils.getThumbnail();

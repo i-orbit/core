@@ -32,7 +32,7 @@ public class MultipartFileUploader implements FileUploader {
     @Override
     public FileMetadata call() throws Exception {
         String extension = FilenameUtils.getExtension(content.getOriginalFilename());
-        Path file = Files.createTempFile(CodecUtils.randomUUID(), extension);
+        Path file = Files.createTempFile(CodecUtils.randomUUID(), "." + extension);
         try (InputStream is = content.getInputStream()) {
             Files.copy(is, file, StandardCopyOption.REPLACE_EXISTING);
         }

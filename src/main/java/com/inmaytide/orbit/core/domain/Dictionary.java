@@ -2,15 +2,19 @@ package com.inmaytide.orbit.core.domain;
 
 import com.inmaytide.orbit.commons.constants.Sharing;
 import com.inmaytide.orbit.commons.constants.Source;
+import com.inmaytide.orbit.commons.domain.pattern.SharingEntity;
 import com.inmaytide.orbit.commons.domain.pattern.TombstoneEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 /**
  * @author inmaytide
  * @since 2024/4/7
  */
 @Schema(title = "数据字典")
-public class Dictionary extends TombstoneEntity {
+public class Dictionary extends TombstoneEntity implements SharingEntity, Comparable<Dictionary> {
 
     @Schema(title = "字典编码", description = "分类编码+字典编码全局唯一")
     private String code;
@@ -37,13 +41,13 @@ public class Dictionary extends TombstoneEntity {
     private Integer sequence;
 
     @Schema(title = "所属租户")
-    private Long tenantId;
+    private Long tenant;
 
     @Schema(title = "所属区域")
-    private Long areaId;
+    private Long area;
 
     @Schema(title = "所属组织")
-    private Long organizationId;
+    private Long organization;
 
     public String getCode() {
         return code;
@@ -109,27 +113,32 @@ public class Dictionary extends TombstoneEntity {
         this.sequence = sequence;
     }
 
-    public Long getTenantId() {
-        return tenantId;
+    public Long getTenant() {
+        return tenant;
     }
 
-    public void setTenantId(Long tenantId) {
-        this.tenantId = tenantId;
+    public void setTenant(Long tenant) {
+        this.tenant = tenant;
     }
 
-    public Long getAreaId() {
-        return areaId;
+    public Long getArea() {
+        return area;
     }
 
-    public void setAreaId(Long areaId) {
-        this.areaId = areaId;
+    public void setArea(Long area) {
+        this.area = area;
     }
 
-    public Long getOrganizationId() {
-        return organizationId;
+    public Long getOrganization() {
+        return organization;
     }
 
-    public void setOrganizationId(Long organizationId) {
-        this.organizationId = organizationId;
+    public void setOrganization(Long organization) {
+        this.organization = organization;
+    }
+
+    @Override
+    public int compareTo(@NotNull Dictionary other) {
+        return Integer.compare(this.getSequence(), Objects.requireNonNull(other).getSequence());
     }
 }

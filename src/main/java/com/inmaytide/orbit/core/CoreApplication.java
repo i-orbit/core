@@ -3,7 +3,6 @@ package com.inmaytide.orbit.core;
 import com.inmaytide.orbit.core.configuration.ApplicationProperties;
 import com.inmaytide.orbit.core.utils.CustomizedMinioClient;
 import io.minio.MinioAsyncClient;
-import io.minio.MinioClient;
 import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.SpecVersion;
@@ -19,7 +18,7 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.inmaytide.orbit.commons", "com.inmaytide.orbit.core"})
 public class CoreApplication {
 
     private static final Logger LOG = LoggerFactory.getLogger(CoreApplication.class);

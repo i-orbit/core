@@ -3,7 +3,7 @@ package com.inmaytide.orbit.core.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.inmaytide.exception.web.ObjectNotFoundException;
 import com.inmaytide.orbit.commons.business.impl.BasicServiceImpl;
-import com.inmaytide.orbit.commons.constants.Is;
+import com.inmaytide.orbit.commons.constants.Bool;
 import com.inmaytide.orbit.core.configuration.ErrorCode;
 import com.inmaytide.orbit.core.domain.DictionaryCategory;
 import com.inmaytide.orbit.core.mapper.DictionaryCategoryMapper;
@@ -27,7 +27,7 @@ public class DictionaryCategoryServiceImpl extends BasicServiceImpl<DictionaryCa
     @Override
     public List<DictionaryCategory> all() {
         LambdaQueryWrapper<DictionaryCategory> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(DictionaryCategory::getDisabled, Is.N);
+        wrapper.eq(DictionaryCategory::getDisabled, Bool.N);
         wrapper.orderByAsc(DictionaryCategory::getSequence);
         return baseMapper.selectList(wrapper);
     }
@@ -35,7 +35,7 @@ public class DictionaryCategoryServiceImpl extends BasicServiceImpl<DictionaryCa
     @Override
     public DictionaryCategory findByCode(String code) {
         LambdaQueryWrapper<DictionaryCategory> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(DictionaryCategory::getDisabled, Is.N);
+        wrapper.eq(DictionaryCategory::getDisabled, Bool.N);
         wrapper.eq(DictionaryCategory::getCode, code);
         DictionaryCategory category = baseMapper.selectOne(wrapper);
         if (category == null) {

@@ -1,7 +1,7 @@
 package com.inmaytide.orbit.core.domain;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.inmaytide.orbit.commons.constants.Is;
+import com.inmaytide.orbit.commons.constants.Bool;
 import com.inmaytide.orbit.commons.domain.pattern.TombstoneEntity;
 import com.inmaytide.orbit.core.consts.AppPlatform;
 import com.inmaytide.orbit.core.consts.AppState;
@@ -38,7 +38,7 @@ public class AppVersion extends TombstoneEntity {
     private String description;
 
     @Schema(title = "是否强制升级")
-    private Is forceUpgrade = Is.N;
+    private Bool forceUpgrade = Bool.N;
 
     @NotNull
     @Schema(title = "APP文件对应文件基本信息唯一标识")
@@ -94,11 +94,11 @@ public class AppVersion extends TombstoneEntity {
         this.description = description;
     }
 
-    public Is getForceUpgrade() {
+    public Bool getForceUpgrade() {
         return forceUpgrade;
     }
 
-    public void setForceUpgrade(Is forceUpgrade) {
+    public void setForceUpgrade(Bool forceUpgrade) {
         this.forceUpgrade = forceUpgrade;
     }
 
