@@ -86,9 +86,17 @@
             <column name="option_value" type="varchar(50)" remarks="数据字典作为下拉选项时的VALUE值, 为空时取字典编码值"/>
             <column name="sharing" type="varchar(10)" remarks="共享级别"/>
             <column name="sequence" type="int" remarks="排序字段"/>
-            <column name="tenant_id" type="bigint" remarks="所属租户"/>
-            <column name="area_id" type="bigint" remarks="所属区域"/>
-            <column name="organization_id" type="bigint" remarks="所属组织"/>
+            <column name="tenant" type="bigint" remarks="所属租户"/>
+            <column name="area" type="bigint" remarks="所属区域"/>
+            <column name="organization" type="bigint" remarks="所属组织"/>
+            <column name="created_time" type="timestamp" remarks="创建时间"/>
+            <column name="created_by" type="bigint" remarks="创建人"/>
+            <column name="modified_time" type="timestamp" remarks="最后修改时间"/>
+            <column name="modified_by" type="bigint" remarks="最后修改人"/>
+            <column name="deleted" type="varchar(2)" remarks="逻辑删除标识" defaultValue="N">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="int" remarks="版本"/>
         </createTable>
         <addUniqueConstraint tableName="dictionary" columnNames="category, code"/>
     </changeSet>

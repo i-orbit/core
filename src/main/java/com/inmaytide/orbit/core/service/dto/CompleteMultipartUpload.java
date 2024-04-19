@@ -9,6 +9,7 @@ import java.io.Serializable;
  * @author inmaytide
  * @since 2024/4/9
  */
+@Schema(title = "分片上传完成后合并文件接口参数")
 public class CompleteMultipartUpload implements Serializable {
 
     @NotBlank

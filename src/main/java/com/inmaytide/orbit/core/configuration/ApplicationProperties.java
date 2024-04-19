@@ -43,21 +43,11 @@ public class ApplicationProperties extends GlobalProperties {
 
     public static class MinIO {
 
-        private String accessFileEndpoint;
-
         private String endpoint;
 
         private String accessKey;
 
         private String secretKey;
-
-        public String getAccessFileEndpoint() {
-            return accessFileEndpoint;
-        }
-
-        public void setAccessFileEndpoint(String accessFileEndpoint) {
-            this.accessFileEndpoint = accessFileEndpoint;
-        }
 
         public String getEndpoint() {
             return endpoint;

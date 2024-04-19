@@ -28,6 +28,14 @@ public class MinioUtils {
         return folder + PATH_SEPARATOR + filename;
     }
 
+    public static String getBucket(String address) {
+        return address.substring(0, address.indexOf("/"));
+    }
+
+    public static String getObjectName(String address) {
+        return address.substring(address.indexOf("/") + 1);
+    }
+
     public static CustomizedMinioClient getMinioClient() {
         if (minioClient == null) {
             minioClient = ApplicationContextHolder.getInstance().getBean(CustomizedMinioClient.class);

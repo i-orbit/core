@@ -4,7 +4,6 @@ import com.inmaytide.exception.web.BadRequestException;
 import com.inmaytide.exception.web.HttpResponseException;
 import com.inmaytide.exception.web.ObjectNotFoundException;
 import com.inmaytide.orbit.commons.utils.CodecUtils;
-import com.inmaytide.orbit.core.configuration.ApplicationProperties;
 import com.inmaytide.orbit.core.configuration.ErrorCode;
 import com.inmaytide.orbit.core.domain.FileMetadata;
 import com.inmaytide.orbit.core.executor.Base64FileUploader;
@@ -16,10 +15,8 @@ import com.inmaytide.orbit.core.service.dto.CompleteMultipartUpload;
 import com.inmaytide.orbit.core.service.dto.CreateMultipartUpload;
 import com.inmaytide.orbit.core.service.dto.CreateMultipartUploadResult;
 import com.inmaytide.orbit.core.utils.CustomizedMinioClient;
-import io.minio.CreateMultipartUploadResponse;
-import io.minio.ListPartsResponse;
-import io.minio.StatObjectArgs;
-import io.minio.StatObjectResponse;
+import com.inmaytide.orbit.core.utils.MinioUtils;
+import io.minio.*;
 import io.minio.http.Method;
 import io.minio.messages.Part;
 import jakarta.servlet.http.HttpServletResponse;
@@ -36,11 +33,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
@@ -60,15 +55,12 @@ public class FileExchangeServiceImpl implements FileExchangeService {
 
     private final CustomizedMinioClient minioClient;
 
-    private final ApplicationProperties props;
-
     private final RedisTemplate<String, CreateMultipartUploadResult> cache;
 
-    public FileExchangeServiceImpl(ThreadPoolTaskExecutor executor, FileMetadataService fileMetadataService, CustomizedMinioClient minioClient, ApplicationProperties props, RedisTemplate<String, CreateMultipartUploadResult> cache) {
+    public FileExchangeServiceImpl(ThreadPoolTaskExecutor executor, FileMetadataService fileMetadataService, CustomizedMinioClient minioClient, RedisTemplate<String, CreateMultipartUploadResult> cache) {
         this.executor = executor;
         this.fileMetadataService = fileMetadataService;
         this.minioClient = minioClient;
-        this.props = props;
         this.cache = cache;
     }
 
@@ -154,14 +146,18 @@ public class FileExchangeServiceImpl implements FileExchangeService {
     public void download(Long id, HttpServletResponse response) {
         FileMetadata metadata = fileMetadataService.get(id).orElseThrow(() -> new ObjectNotFoundException(ErrorCode.E_0x00300007, String.valueOf(id)));
         try {
+            CompletableFuture<GetObjectResponse> f = minioClient.getObject(
+                    GetObjectArgs.builder()
+                            .bucket(MinioUtils.getBucket(metadata.getAddress()))
+                            .object(MinioUtils.getObjectName(metadata.getAddress()))
+                            .build()
+            );
             String displayFileName = new String((metadata.getName() + "." + metadata.getExtension()).getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1);
-            URL url = new URI(props.getMinIO().getAccessFileEndpoint() + "/" + metadata.getAddress()).toURL();
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             response.reset();
             response.setContentLength(metadata.getSize().intValue());
             response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
             response.addHeader("Content-Disposition", "attachment;filename=" + displayFileName);
-            try (BufferedInputStream is = new BufferedInputStream(connection.getInputStream()); OutputStream os = new BufferedOutputStream(response.getOutputStream())) {
+            try (BufferedInputStream is = new BufferedInputStream(f.get()); OutputStream os = new BufferedOutputStream(response.getOutputStream())) {
                 byte[] buffer = new byte[4096];
                 int len;
                 while ((len = is.read(buffer)) > 0) {
