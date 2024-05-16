@@ -2,6 +2,7 @@ package com.inmaytide.orbit.core.service;
 
 import com.inmaytide.orbit.commons.domain.SystemProperty;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -14,4 +15,5 @@ public interface SystemPropertyService {
 
     Optional<SystemProperty> get(Long tenant, String name);
 
+    List<SystemProperty> all(Long tenantId);
 }

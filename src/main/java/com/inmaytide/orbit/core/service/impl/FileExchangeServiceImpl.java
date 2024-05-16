@@ -35,7 +35,6 @@ import java.io.BufferedOutputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
@@ -146,24 +145,26 @@ public class FileExchangeServiceImpl implements FileExchangeService {
     public void download(Long id, HttpServletResponse response) {
         FileMetadata metadata = fileMetadataService.get(id).orElseThrow(() -> new ObjectNotFoundException(ErrorCode.E_0x00300007, String.valueOf(id)));
         try {
-            CompletableFuture<GetObjectResponse> f = minioClient.getObject(
-                    GetObjectArgs.builder()
-                            .bucket(MinioUtils.getBucket(metadata.getAddress()))
-                            .object(MinioUtils.getObjectName(metadata.getAddress()))
-                            .build()
-            );
+            GetObjectArgs args = GetObjectArgs.builder()
+                    .bucket(MinioUtils.getBucket(metadata.getAddress()))
+                    .object(MinioUtils.getObjectName(metadata.getAddress()))
+                    .build();
             String displayFileName = new String((metadata.getName() + "." + metadata.getExtension()).getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1);
             response.reset();
             response.setContentLength(metadata.getSize().intValue());
             response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
             response.addHeader("Content-Disposition", "attachment;filename=" + displayFileName);
-            try (BufferedInputStream is = new BufferedInputStream(f.get()); OutputStream os = new BufferedOutputStream(response.getOutputStream())) {
-                byte[] buffer = new byte[4096];
-                int len;
-                while ((len = is.read(buffer)) > 0) {
-                    os.write(buffer, 0, len);
+            minioClient.getObject(args).thenAccept(res -> {
+                try (BufferedInputStream is = new BufferedInputStream(res); OutputStream os = new BufferedOutputStream(response.getOutputStream())) {
+                    byte[] buffer = new byte[4096];
+                    int len;
+                    while ((len = is.read(buffer)) > 0) {
+                        os.write(buffer, 0, len);
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
-            }
+            });
         } catch (Exception e) {
             log.error("下载文件{id = {}}失败, Cause by: ", id, e);
             throw new HttpResponseException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E_0x00300008, e);

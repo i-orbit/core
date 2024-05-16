@@ -3,13 +3,13 @@ package com.inmaytide.orbit.core.utils;
 import com.inmaytide.orbit.commons.utils.ApplicationContextHolder;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.File;
+
 /**
  * @author inmaytide
  * @since 2024/4/11
  */
-public class MinioUtils {
-
-    private static final String PATH_SEPARATOR = "/";
+public final class MinioUtils {
 
     private static CustomizedMinioClient minioClient;
 
@@ -18,22 +18,26 @@ public class MinioUtils {
     }
 
     public static String getAddress(String bucket, String folder, String filename) {
-        return bucket + PATH_SEPARATOR + getObjectName(folder, filename);
+        return getAddress(bucket, getObjectName(folder, filename));
+    }
+
+    public static String getAddress(String bucket, String objectName) {
+        return bucket + File.separator + objectName;
     }
 
     public static String getObjectName(String folder, String filename) {
-        folder = StringUtils.removeStart(folder, PATH_SEPARATOR);
-        folder = StringUtils.removeEnd(folder, PATH_SEPARATOR);
-        filename = StringUtils.removeStart(filename, PATH_SEPARATOR);
-        return folder + PATH_SEPARATOR + filename;
+        folder = StringUtils.removeStart(folder, File.separator);
+        folder = StringUtils.removeEnd(folder, File.separator);
+        filename = StringUtils.removeStart(filename, File.separator);
+        return folder + File.separator + filename;
     }
 
     public static String getBucket(String address) {
-        return address.substring(0, address.indexOf("/"));
+        return StringUtils.removeStart(address, File.separator);
     }
 
     public static String getObjectName(String address) {
-        return address.substring(address.indexOf("/") + 1);
+        return StringUtils.substring(address, address.indexOf(File.separator) + 1);
     }
 
     public static CustomizedMinioClient getMinioClient() {
@@ -42,4 +46,5 @@ public class MinioUtils {
         }
         return minioClient;
     }
+
 }

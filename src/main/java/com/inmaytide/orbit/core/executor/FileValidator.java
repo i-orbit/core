@@ -2,13 +2,15 @@ package com.inmaytide.orbit.core.executor;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.inmaytide.orbit.commons.constants.Bool;
-import com.inmaytide.orbit.commons.metrics.AbstractJob;
+import com.inmaytide.orbit.commons.metrics.JobAdapter;
 import com.inmaytide.orbit.commons.utils.CodecUtils;
 import com.inmaytide.orbit.core.configuration.FileUploaderProperties;
+import com.inmaytide.orbit.core.consts.FileCategory;
 import com.inmaytide.orbit.core.domain.FileMetadata;
 import com.inmaytide.orbit.core.mapper.FileMetadataMapper;
 import com.inmaytide.orbit.core.utils.CustomizedMinioClient;
 import com.inmaytide.orbit.core.utils.FileUploadUtils;
+import com.inmaytide.orbit.core.utils.MinioUtils;
 import io.minio.DownloadObjectArgs;
 import io.minio.RemoveObjectArgs;
 import org.apache.commons.io.FilenameUtils;
@@ -22,6 +24,7 @@ import java.nio.file.Path;
 import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * 大文件上传时文件的SHA256值是由前端传入，后端无法及时验证机生成缩略图；
@@ -40,7 +43,7 @@ import java.util.Objects;
  * @author inmaytide
  * @since 2024/4/10
  */
-public class FileValidator extends AbstractJob {
+public class FileValidator implements JobAdapter {
 
     private final Logger log = LoggerFactory.getLogger(FileValidator.class);
 
@@ -61,17 +64,17 @@ public class FileValidator extends AbstractJob {
     }
 
     @Override
-    protected void exec(JobExecutionContext context) {
+    public void exec(JobExecutionContext context) {
         List<FileMetadata> list = fileMetadataMapper.selectList(Wrappers.lambdaQuery(FileMetadata.class).eq(FileMetadata::getVerified, Bool.N));
         if (list.isEmpty()) {
-            log.debug("系统中暂无未验证的文件信息");
+            log.debug("No unverified files");
             return;
         }
         list.forEach(this::validate);
     }
 
     private void validate(FileMetadata metadata) {
-        log.debug("开始验证文件{id = {}}", metadata.getId());
+        log.debug("Start verifying file{id = {}}", metadata.getId());
         String bucket = metadata.getAddress().substring(0, metadata.getAddress().indexOf("/"));
         String objectName = metadata.getAddress().substring(metadata.getAddress().indexOf("/") + 1);
         Path file;
@@ -83,7 +86,7 @@ public class FileValidator extends AbstractJob {
             log.error("文件{id = {}}处理失败，下载文件时发生错误, Cause by: ", metadata.getId(), e);
             return;
         }
-        String actualSHA256 = FileUploadUtils.getFileSHA256(file);
+        String actualSHA256 = CodecUtils.getSHA256Value(file);
         if (Objects.equals(actualSHA256, metadata.getSha256())) {
             onSuccess(metadata, file, bucket, objectName);
         } else {
@@ -109,16 +112,15 @@ public class FileValidator extends AbstractJob {
     private void onSuccess(FileMetadata metadata, Path file, String bucket, String objectName) {
         log.debug("文件{id = {}}验证成功", metadata.getId());
         metadata.setVerified(Bool.Y);
-        if (FileUploadUtils.isImage(metadata.getExtension()) || FileUploadUtils.isVideo(metadata.getExtension())) {
+        Optional<ThumbnailGenerator> thumbnailGenerator = FileUploadUtils.getThumbnailGenerator(file);
+        if (thumbnailGenerator.isPresent()) {
             try {
-                FileUploaderProperties.Thumbnail configuration = FileUploadUtils.getThumbnail();
-                String suffix = "_%dx%d".formatted(configuration.getWidth(), configuration.getHeight()) + "." + configuration.getOutputFormat();
-                String thumbnailAddress = FilenameUtils.removeExtension(objectName) + suffix;
-                Path thumbnail = FileUploadUtils.generateThumbnail(file);
+                String thumbnailAddress = FilenameUtils.removeExtension(objectName) + thumbnailGenerator.get().getOutputNameSuffix();
+                Path thumbnail = thumbnailGenerator.get().generate(file);
                 FileUploadUtils.upload(bucket, thumbnailAddress, thumbnail);
-                metadata.setThumbnailAddress(bucket + "/" + thumbnailAddress);
+                metadata.setThumbnailAddress(MinioUtils.getAddress(bucket, thumbnailAddress));
             } catch (Exception e) {
-                log.error("文件{id = {}}缩略图生成失败, Cause by: ", metadata.getId(), e);
+                log.error("文件{id = {}}生成缩略图失败, Cause by: ", metadata.getId(), e);
             }
         }
         fileMetadataMapper.updateById(metadata);

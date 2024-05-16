@@ -7,6 +7,7 @@ import com.inmaytide.orbit.commons.utils.CodecUtils;
 import com.inmaytide.orbit.commons.utils.DatetimeUtils;
 import com.inmaytide.orbit.core.configuration.ErrorCode;
 import com.inmaytide.orbit.core.configuration.FileUploaderProperties;
+import com.inmaytide.orbit.core.consts.FileCategory;
 import com.inmaytide.orbit.core.domain.FileMetadata;
 import com.inmaytide.orbit.core.service.FileMetadataService;
 import com.inmaytide.orbit.core.utils.FileUploadUtils;
@@ -41,7 +42,7 @@ public interface FileUploader extends Callable<FileMetadata> {
 
     default String getAndValidateExtension(String filename) {
         String extension = FilenameUtils.getExtension(filename);
-        if (!FileUploadUtils.support(extension)) {
+        if (!FileUploadUtils.isAllowExtension(extension)) {
             throw new BadRequestException(ErrorCode.E_0x00300003);
         }
         return extension;
@@ -49,7 +50,7 @@ public interface FileUploader extends Callable<FileMetadata> {
 
     default FileMetadata upload(String filename, Path file) throws Exception {
         // 验证文件SHA256值, 如果文件已存在直接返回文件元数据
-        String sha256 = FileUploadUtils.getFileSHA256(file);
+        String sha256 = CodecUtils.getSHA256Value(file);
         Optional<FileMetadata> exist = getFileMetadataService().findBySHA256(sha256);
         if (exist.isPresent()) {
             return exist.get();
@@ -62,12 +63,10 @@ public interface FileUploader extends Callable<FileMetadata> {
         String randomName = CodecUtils.generateRandomString(32);
         String thumbnailRandomName = null;
         FileUploadUtils.upload(getBucket(), MinioUtils.getObjectName(folder, randomName + "." + extension), file);
-
-        if (FileUploadUtils.isImage(extension) || FileUploadUtils.isVideo(extension)) {
-            FileUploaderProperties.Thumbnail configuration = FileUploadUtils.getThumbnail();
-            String suffix = "_%dx%d".formatted(configuration.getWidth(), configuration.getHeight()) + "." + configuration.getOutputFormat();
-            thumbnailRandomName = randomName + suffix;
-            Path thumbnail = FileUploadUtils.generateThumbnail(file);
+        Optional<ThumbnailGenerator> thumbnailGenerator = FileUploadUtils.getThumbnailGenerator(file);
+        if (thumbnailGenerator.isPresent()) {
+            thumbnailRandomName = randomName + thumbnailGenerator.get().getOutputNameSuffix();
+            Path thumbnail = thumbnailGenerator.get().generate(file);
             FileUploadUtils.upload(getBucket(), MinioUtils.getObjectName(folder, thumbnailRandomName), thumbnail);
         }
         FileUploadUtils.delete(file);

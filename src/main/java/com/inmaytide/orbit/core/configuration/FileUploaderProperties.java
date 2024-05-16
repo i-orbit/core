@@ -1,13 +1,13 @@
 package com.inmaytide.orbit.core.configuration;
 
 import com.inmaytide.orbit.commons.utils.CommonUtils;
+import com.inmaytide.orbit.core.consts.FileCategory;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.util.*;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -19,7 +19,7 @@ public class FileUploaderProperties {
 
     private Long singleFileMaximumSize;
 
-    private SupportExtensions supportExtensions;
+    private Extensions allowedExtensions;
 
     private Thumbnail thumbnail;
 
@@ -31,12 +31,12 @@ public class FileUploaderProperties {
         this.singleFileMaximumSize = singleFileMaximumSize;
     }
 
-    public SupportExtensions getSupportExtensions() {
-        return supportExtensions;
+    public Extensions getAllowedExtensions() {
+        return allowedExtensions;
     }
 
-    public void setSupportExtensions(SupportExtensions supportExtensions) {
-        this.supportExtensions = supportExtensions;
+    public void setAllowedExtensions(Extensions allowedExtensions) {
+        this.allowedExtensions = allowedExtensions;
     }
 
     public Thumbnail getThumbnail() {
@@ -90,9 +90,7 @@ public class FileUploaderProperties {
         }
     }
 
-    public static class SupportExtensions {
-
-        private static final Pattern COMMA = Pattern.compile(",");
+    public static class Extensions {
 
         private Set<String> images;
 
@@ -106,26 +104,29 @@ public class FileUploaderProperties {
 
         private Set<String> apps;
 
-        private void set(String field, String value) {
-            Field f = ReflectionUtils.findField(this.getClass(), field);
+        private void set(FileCategory category, String value) {
+            Field f = ReflectionUtils.findFieldIgnoreCase(this.getClass(), category.name());
             Objects.requireNonNull(f);
             f.setAccessible(true);
             ReflectionUtils.setField(f, this, StringUtils.isBlank(value) ? Collections.emptySet() : new HashSet<>(CommonUtils.splitByCommas(value)));
         }
 
-        public Set<String> getAllSupportedExtensions() {
+        public Set<String> get(FileCategory category) {
+            Field f = ReflectionUtils.findFieldIgnoreCase(this.getClass(), category.name());
+            Objects.requireNonNull(f);
+            f.setAccessible(true);
+            Object value = ReflectionUtils.getField(f, this);
+            if (value instanceof Set<?>) {
+                return (Set<String>) value;
+            }
+            return Collections.emptySet();
+        }
+
+        public Set<String> all() {
             return Stream.of(images, videos, documents, archives, others, apps)
                     .filter(CollectionUtils::isNotEmpty)
                     .flatMap(Collection::stream)
                     .collect(Collectors.toSet());
-        }
-
-        public Set<String> getApps() {
-            return apps;
-        }
-
-        public void setApps(String apps) {
-            set("apps", apps);
         }
 
         public Set<String> getImages() {
@@ -133,7 +134,7 @@ public class FileUploaderProperties {
         }
 
         public void setImages(String images) {
-            set("images", images);
+            set(FileCategory.IMAGES, images);
         }
 
         public Set<String> getVideos() {
@@ -141,15 +142,7 @@ public class FileUploaderProperties {
         }
 
         public void setVideos(String videos) {
-            set("videos", videos);
-        }
-
-        public Set<String> getOthers() {
-            return others;
-        }
-
-        public void setOthers(String others) {
-            set("others", others);
+            set(FileCategory.VIDEOS, videos);
         }
 
         public Set<String> getDocuments() {
@@ -157,7 +150,7 @@ public class FileUploaderProperties {
         }
 
         public void setDocuments(String documents) {
-            set("documents", documents);
+            set(FileCategory.DOCUMENTS, documents);
         }
 
         public Set<String> getArchives() {
@@ -165,7 +158,23 @@ public class FileUploaderProperties {
         }
 
         public void setArchives(String archives) {
-            set("archives", archives);
+            set(FileCategory.ARCHIVES, archives);
+        }
+
+        public Set<String> getApps() {
+            return apps;
+        }
+
+        public void setApps(String apps) {
+            set(FileCategory.APPS, apps);
+        }
+
+        public Set<String> getOthers() {
+            return others;
+        }
+
+        public void setOthers(String others) {
+            set(FileCategory.OTHERS, others);
         }
     }
 

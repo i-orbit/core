@@ -1,6 +1,8 @@
 package com.inmaytide.orbit.core.domain;
 
 import com.inmaytide.orbit.commons.domain.pattern.TombstoneEntity;
+import com.inmaytide.orbit.commons.domain.validation.groups.Add;
+import com.inmaytide.orbit.commons.domain.validation.groups.Delete;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 
@@ -11,15 +13,15 @@ import jakarta.validation.constraints.NotNull;
 @Schema(title = "文件库文件引用记录")
 public class FileAssociation extends TombstoneEntity {
 
-    @NotNull
+    @NotNull(groups = {Add.class, Delete.class})
     @Schema(title = "文件库文件唯一标识")
     private Long fileId;
 
-    @NotNull
+    @NotNull(groups = {Add.class})
     @Schema(title = "业务标识", description = "系统业务分类-数据字典编码")
     private String business;
 
-    @NotNull
+    @NotNull(groups = {Add.class, Delete.class})
     @Schema(title = "引用文件业务对象唯一标识")
     private Long businessDataId;
 
