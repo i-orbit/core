@@ -101,4 +101,16 @@
         <addUniqueConstraint tableName="dictionary" columnNames="category, code"/>
     </changeSet>
 
+    <changeSet id="000000000000004" author="inmaytide">
+        <createTable tableName="geographic_coordinate" remarks="地理坐标信息">
+            <column name="business_data_id" type="bigint" remarks="业务数据唯一标识"/>
+            <column name="longitude" type="decimal(16, 10)" remarks="经度"/>
+            <column name="latitude" type="decimal(16, 10)" remarks="纬度"/>
+        </createTable>
+        <addPrimaryKey tableName="geographic_coordinate" columnNames="business_data_id, longitude, latitude"/>
+        <createIndex tableName="geographic_coordinate" indexName="idx_bd_id">
+            <column name="business_data_id"/>
+        </createIndex>
+    </changeSet>
+
 </databaseChangeLog>
