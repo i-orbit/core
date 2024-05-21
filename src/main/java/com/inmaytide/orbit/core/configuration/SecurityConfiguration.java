@@ -2,6 +2,7 @@ package com.inmaytide.orbit.core.configuration;
 
 import com.inmaytide.exception.web.reactive.DefaultExceptionHandler;
 import com.inmaytide.exception.web.servlet.DefaultHandlerExceptionResolver;
+import com.inmaytide.orbit.commons.security.CustomizedBearerTokenResolver;
 import com.inmaytide.orbit.commons.security.CustomizedOpaqueTokenIntrospector;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,6 +45,7 @@ public class SecurityConfiguration {
                 .oauth2ResourceServer(c -> {
                     c.accessDeniedHandler((req, res, e) -> exceptionResolver.resolveException(req, res, null, e));
                     c.authenticationEntryPoint((req, res, e) -> exceptionResolver.resolveException(req, res, null, e));
+                    c.bearerTokenResolver(new CustomizedBearerTokenResolver());
                     c.opaqueToken(ot -> ot.introspector(new CustomizedOpaqueTokenIntrospector(restTemplate)));
                 })
                 .exceptionHandling(c -> {
