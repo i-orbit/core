@@ -159,6 +159,10 @@
             <groupId>com.inmaytide.orbit</groupId>
             <artifactId>commons-metrics</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>oauth2-oidc-sdk</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
