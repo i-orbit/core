@@ -7,6 +7,7 @@ import com.inmaytide.orbit.commons.security.CustomizedOpaqueTokenIntrospector;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -53,6 +54,7 @@ public class SecurityConfiguration {
                     c.authenticationEntryPoint((req, res, e) -> exceptionResolver.resolveException(req, res, null, e));
                 })
                 .authorizeHttpRequests(c -> {
+                    c.requestMatchers(HttpMethod.GET, "/api/system/properties").permitAll();
                     c.anyRequest().authenticated();
                 }).build();
     }

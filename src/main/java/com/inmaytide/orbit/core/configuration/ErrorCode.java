@@ -14,7 +14,8 @@ public enum ErrorCode implements com.inmaytide.exception.web.domain.ErrorCode {
     E_0x00300006("0x00300006", "获取文件基本信息失败"),
     E_0x00300007("0x00300007", "ID 为 {0} 的文件不存在"),
     E_0x00300008("0x00300008", "下载文件时发生错误"),
-    E_0x00300009("0x00300009", "没有找到 Code 为 {0} 的数据字典分类");
+    E_0x00300009("0x00300009", "没有找到 Code 为 {0} 的数据字典分类"),
+    E_0x00300010("0x00300010", "指定租户 {0} 指定配置属性 \"{1}\" 不存在");
 
     private final String value;
 
