@@ -53,7 +53,15 @@ public class SystemPropertyServiceImpl implements SystemPropertyService {
         LambdaQueryWrapper<SystemProperty> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SystemProperty::getTenantId, tenant);
         wrapper.eq(SystemProperty::getName, name);
-        return Optional.ofNullable(propertyMapper.selectOne(wrapper));
+        SystemProperty entity = propertyMapper.selectOne(wrapper);
+        if (entity == null) {
+            wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(SystemProperty::getTenantId, Constants.Markers.NON_TENANT_ID);
+            wrapper.eq(SystemProperty::getName, name);
+            wrapper.eq(SystemProperty::getGlobal, Bool.Y.name());
+            entity = propertyMapper.selectOne(wrapper);
+        }
+        return Optional.ofNullable(entity);
     }
 
     @Override

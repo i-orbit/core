@@ -113,4 +113,23 @@
         </createIndex>
     </changeSet>
 
+    <changeSet id="000000000000005" author="inmaytide">
+        <createTable tableName="system_property" remarks="系统属性配置">
+            <column name="tenant_id" type="bigint" remarks="租户ID"/>
+            <column name="name" type="varchar(100)" remarks="属性名称"/>
+            <column name="description" type="varchar(100)" remarks="属性描述"/>
+            <column name="value" type="varchar(100)" remarks="属性值"/>
+            <column name="authenticated" type="varchar(2)" remarks="是否需要已授权"/>
+            <column name="exposed" type="varchar(2)" remarks="系统外部是否可见"/>
+            <column name="global" type="varchar(2)" remarks="是否全局有效"/>
+        </createTable>
+        <sql>
+            insert into system_property(tenant_id, name, description, value, authenticated, exposed, global) values
+                (3721, 'force.change-password.when-necessary', '必要时是否强制修改密码', 'Y', 'Y', 'N', 'Y'),
+                (3721, 'operation-log.retention.days', '系统最大保留多长时间的用户审计操作日志', '180', 'Y', 'N', 'Y'),
+                (3721, 'user-password.valid.days', '用户密码有效天数', '180', 'Y', 'N', 'Y'),
+                (3721, 'system.name', '系统名称', 'ORBIT-智慧互联', 'N', 'N', 'Y');
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
