@@ -54,6 +54,7 @@ public class SecurityConfiguration {
                     c.authenticationEntryPoint((req, res, e) -> exceptionResolver.resolveException(req, res, null, e));
                 })
                 .authorizeHttpRequests(c -> {
+                    c.requestMatchers("/v3/api-docs").permitAll();
                     c.requestMatchers(HttpMethod.GET, "/api/system/properties").permitAll();
                     c.anyRequest().authenticated();
                 }).build();
