@@ -11,6 +11,7 @@ import com.inmaytide.orbit.core.service.DictionaryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
  * @author inmaytide
  * @since 2024/4/16
  */
+@Primary
 @Service
 public class DictionaryServiceImpl extends BasicServiceImpl<DictionaryMapper, Dictionary> implements DictionaryService {
 
