@@ -1,6 +1,7 @@
 package com.inmaytide.orbit.core.api;
 
 import com.inmaytide.orbit.commons.domain.dto.result.TreeNode;
+import com.inmaytide.orbit.commons.utils.CommonUtils;
 import com.inmaytide.orbit.core.domain.Dictionary;
 import com.inmaytide.orbit.core.domain.DictionaryCategory;
 import com.inmaytide.orbit.core.service.DictionaryCategoryService;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author inmaytide
@@ -42,6 +44,12 @@ public class DictionaryResource {
     @Operation(summary = "查询指定数据字典分类的数据字典树")
     public List<TreeNode<Dictionary>> treeByCategory(@RequestParam String category) {
         return dictionaryService.treeByCategory(category);
+    }
+
+    @GetMapping("names")
+    @Operation(summary = "批量通过字典编码获取字典名称")
+    public Map<String, String> findNamesByCodes(@RequestParam String codes) {
+        return dictionaryService.findNamesByCodes(CommonUtils.splitByCommas(codes));
     }
 
 }

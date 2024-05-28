@@ -5,6 +5,7 @@ import com.inmaytide.orbit.commons.domain.dto.result.TreeNode;
 import com.inmaytide.orbit.core.domain.Dictionary;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author inmaytide
@@ -20,4 +21,5 @@ public interface DictionaryService extends BasicService<Dictionary> {
 
     List<Dictionary> listByCategory(String category);
 
+    Map<String, String> findNamesByCodes(List<String> codes);
 }

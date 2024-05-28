@@ -104,6 +104,17 @@ public class DictionaryServiceImpl extends BasicServiceImpl<DictionaryMapper, Di
         return baseMapper.selectList(wrapper);
     }
 
+    @Override
+    public Map<String, String> findNamesByCodes(List<String> codes) {
+        if (codes == null || codes.isEmpty()) {
+            return Collections.emptyMap();
+        }
+        LambdaQueryWrapper<Dictionary> wrapper = new LambdaQueryWrapper<>();
+        wrapper.select(Dictionary::getName, Dictionary::getCode);
+        wrapper.in(Dictionary::getCode, codes);
+        return getBaseMapper().selectList(wrapper).stream().collect(Collectors.toMap(Dictionary::getCode, Dictionary::getName));
+    }
+
     @Lazy
     @Autowired
     public void setSelf(DictionaryService self) {
