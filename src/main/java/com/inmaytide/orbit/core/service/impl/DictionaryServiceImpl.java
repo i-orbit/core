@@ -33,18 +33,18 @@ public class DictionaryServiceImpl extends BasicServiceImpl<DictionaryMapper, Di
     private DictionaryService self;
 
     @Override
-    public List<TreeNode<Dictionary>> treeByCategory(String category) {
+    public TreeSet<TreeNode<Dictionary>> treeByCategory(String category) {
         Map<String, Dictionary> dictionaries = self.listByCategory(category).stream().collect(Collectors.toMap(Dictionary::getCode, Function.identity(), (a, b) -> b, TreeMap::new));
         List<String> requiredCodes = getRequiredCodes(dictionaries);
         return findTreeNodes(ROOT_CODE, 1, dictionaries, requiredCodes);
     }
 
-    private List<TreeNode<Dictionary>> findTreeNodes(Serializable parentCode, int level, Map<String, Dictionary> all, List<String> requiredCodes) {
+    private TreeSet<TreeNode<Dictionary>> findTreeNodes(Serializable parentCode, int level, Map<String, Dictionary> all, List<String> requiredCodes) {
         return all.values().stream()
                 .filter(e -> Objects.equals(e.getParent(), parentCode))
                 .filter(e -> requiredCodes.contains(e.getCode()))
                 .map(e -> toTreeNode(e, level, all, requiredCodes))
-                .toList();
+                .collect(Collectors.toCollection(TreeSet::new));
     }
 
     private TreeNode<Dictionary> toTreeNode(Dictionary dictionary, int level, Map<String, Dictionary> all, List<String> requiredCodes) {
@@ -57,6 +57,7 @@ public class DictionaryServiceImpl extends BasicServiceImpl<DictionaryMapper, Di
         node.setEntity(dictionary);
         node.setChildren(findTreeNodes(dictionary.getCode(), level + 1, all, requiredCodes));
         node.setAuthorized(dictionary.isAuthorized(SecurityUtils.getAuthorizedUser()));
+        node.setSequence(dictionary.getSequence());
         return node;
     }
 
@@ -77,7 +78,7 @@ public class DictionaryServiceImpl extends BasicServiceImpl<DictionaryMapper, Di
     }
 
     /**
-     * 查询某个组织的父组织id链
+     * 查询某个数据字典的父字典id链
      *
      * @param code 需要查询的数据字典编码
      * @param all  所有数据字典集合

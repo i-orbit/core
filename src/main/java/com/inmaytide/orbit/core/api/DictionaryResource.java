@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 /**
  * @author inmaytide
@@ -42,7 +43,7 @@ public class DictionaryResource {
 
     @GetMapping("tree-by-category")
     @Operation(summary = "查询指定数据字典分类的数据字典树")
-    public List<TreeNode<Dictionary>> treeByCategory(@RequestParam String category) {
+    public TreeSet<TreeNode<Dictionary>> treeByCategory(@RequestParam String category) {
         return dictionaryService.treeByCategory(category);
     }
 

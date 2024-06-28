@@ -6,6 +6,7 @@ import com.inmaytide.orbit.core.domain.Dictionary;
 
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 /**
  * @author inmaytide
@@ -17,7 +18,7 @@ public interface DictionaryService extends BasicService<Dictionary> {
 
     String SYMBOL = "DICTIONARY";
 
-    List<TreeNode<Dictionary>> treeByCategory(String category);
+    TreeSet<TreeNode<Dictionary>> treeByCategory(String category);
 
     List<Dictionary> listByCategory(String category);
 
