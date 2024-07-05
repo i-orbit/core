@@ -1,7 +1,6 @@
 package com.inmaytide.orbit.core.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.inmaytide.orbit.commons.business.impl.BasicServiceImpl;
 import com.inmaytide.orbit.core.domain.FileMetadata;
 import com.inmaytide.orbit.core.mapper.FileMetadataMapper;
 import com.inmaytide.orbit.core.service.FileMetadataService;
@@ -17,7 +16,13 @@ import java.util.concurrent.Future;
  * @since 2024/4/8
  */
 @Service
-public class FileMetadataServiceImpl extends BasicServiceImpl<FileMetadataMapper, FileMetadata> implements FileMetadataService {
+public class FileMetadataServiceImpl implements FileMetadataService {
+
+    private final FileMetadataMapper baseMapper;
+
+    public FileMetadataServiceImpl(FileMetadataMapper baseMapper) {
+        this.baseMapper = baseMapper;
+    }
 
     @Override
     public FileMetadata persist(Future<FileMetadata> future) {
@@ -36,8 +41,12 @@ public class FileMetadataServiceImpl extends BasicServiceImpl<FileMetadataMapper
     public Optional<FileMetadata> findBySHA256(String sha256) {
         LambdaQueryWrapper<FileMetadata> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(FileMetadata::getSha256, sha256);
-        List<FileMetadata> entities = list(wrapper);
+        List<FileMetadata> entities = baseMapper.selectList(wrapper);
         return entities.isEmpty() ? Optional.empty() : Optional.of(entities.getFirst());
     }
 
+    @Override
+    public FileMetadataMapper getBaseMapper() {
+        return baseMapper;
+    }
 }

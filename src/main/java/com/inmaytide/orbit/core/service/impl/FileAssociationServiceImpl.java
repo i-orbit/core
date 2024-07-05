@@ -1,7 +1,6 @@
 package com.inmaytide.orbit.core.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.inmaytide.orbit.commons.business.impl.BasicServiceImpl;
 import com.inmaytide.orbit.commons.domain.dto.result.AffectedResult;
 import com.inmaytide.orbit.core.domain.FileAssociation;
 import com.inmaytide.orbit.core.mapper.FileAssociationMapper;
@@ -13,7 +12,13 @@ import org.springframework.stereotype.Service;
  * @since 2024/5/15
  */
 @Service
-public class FileAssociationServiceImpl extends BasicServiceImpl<FileAssociationMapper, FileAssociation> implements FileAssociationService {
+public class FileAssociationServiceImpl implements FileAssociationService {
+
+    private final FileAssociationMapper baseMapper;
+
+    public FileAssociationServiceImpl(FileAssociationMapper baseMapper) {
+        this.baseMapper = baseMapper;
+    }
 
     @Override
     public AffectedResult delete(FileAssociation entity) {
@@ -23,4 +28,8 @@ public class FileAssociationServiceImpl extends BasicServiceImpl<FileAssociation
         return AffectedResult.withAffected(baseMapper.delete(wrapper));
     }
 
+    @Override
+    public FileAssociationMapper getBaseMapper() {
+        return baseMapper;
+    }
 }

@@ -2,7 +2,6 @@ package com.inmaytide.orbit.core.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.inmaytide.exception.web.ObjectNotFoundException;
-import com.inmaytide.orbit.commons.business.impl.BasicServiceImpl;
 import com.inmaytide.orbit.commons.constants.Bool;
 import com.inmaytide.orbit.core.configuration.ErrorCode;
 import com.inmaytide.orbit.core.domain.DictionaryCategory;
@@ -20,9 +19,15 @@ import java.util.List;
  * @since 2024/4/16
  */
 @Service
-public class DictionaryCategoryServiceImpl extends BasicServiceImpl<DictionaryCategoryMapper, DictionaryCategory> implements DictionaryCategoryService {
+public class DictionaryCategoryServiceImpl implements DictionaryCategoryService {
+
+    private final DictionaryCategoryMapper baseMapper;
 
     private DictionaryService dictionaryService;
+
+    public DictionaryCategoryServiceImpl(DictionaryCategoryMapper baseMapper) {
+        this.baseMapper = baseMapper;
+    }
 
     @Override
     public List<DictionaryCategory> all() {
@@ -49,5 +54,10 @@ public class DictionaryCategoryServiceImpl extends BasicServiceImpl<DictionaryCa
     @Autowired
     public void setDictionaryService(DictionaryService dictionaryService) {
         this.dictionaryService = dictionaryService;
+    }
+
+    @Override
+    public DictionaryCategoryMapper getBaseMapper() {
+        return baseMapper;
     }
 }

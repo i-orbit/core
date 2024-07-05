@@ -18,7 +18,13 @@ import java.util.Objects;
  * @since 2024/5/16
  */
 @Service
-public class GeographicCoordinateServiceImpl extends ServiceImpl<GeographicCoordinateMapper, GeographicCoordinate> implements GeographicCoordinateService {
+public class GeographicCoordinateServiceImpl implements GeographicCoordinateService {
+
+    private final GeographicCoordinateMapper baseMapper;
+
+    public GeographicCoordinateServiceImpl(GeographicCoordinateMapper baseMapper) {
+        this.baseMapper = baseMapper;
+    }
 
     @Override
     @Transactional
@@ -29,7 +35,7 @@ public class GeographicCoordinateServiceImpl extends ServiceImpl<GeographicCoord
         Objects.requireNonNull(body.getBusinessDataId());
         deleteByBusinessDataId(body.getBusinessDataId());
         body.getElements().forEach(e -> e.setBusinessDataId(body.getBusinessDataId()));
-        saveBatch(body.getElements());
+        body.getElements().forEach(baseMapper::insert);
         return findByBusinessDataId(body.getBusinessDataId());
     }
 
@@ -45,5 +51,9 @@ public class GeographicCoordinateServiceImpl extends ServiceImpl<GeographicCoord
         LambdaQueryWrapper<GeographicCoordinate> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(GeographicCoordinate::getBusinessDataId, businessDataId);
         return baseMapper.selectList(wrapper);
+    }
+
+    public GeographicCoordinateMapper getBaseMapper() {
+        return baseMapper;
     }
 }

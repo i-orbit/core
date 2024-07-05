@@ -7,6 +7,7 @@ import com.inmaytide.orbit.commons.domain.pattern.Entity;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
+import java.util.TreeSet;
 
 /**
  * @author inmaytide
@@ -35,7 +36,7 @@ public class DictionaryCategory extends Entity {
 
     @TableField(exist = false)
     @Schema(title = "对应的数据字典列表")
-    private List<TreeNode<Dictionary>> dictionaries;
+    private TreeSet<TreeNode<Dictionary>> dictionaries;
 
     public String getCode() {
         return code;
@@ -85,11 +86,11 @@ public class DictionaryCategory extends Entity {
         this.sequence = sequence;
     }
 
-    public List<TreeNode<Dictionary>> getDictionaries() {
+    public TreeSet<TreeNode<Dictionary>> getDictionaries() {
         return dictionaries;
     }
 
-    public void setDictionaries(List<TreeNode<Dictionary>> dictionaries) {
+    public void setDictionaries(TreeSet<TreeNode<Dictionary>> dictionaries) {
         this.dictionaries = dictionaries;
     }
 }

@@ -1,7 +1,7 @@
 package com.inmaytide.orbit.core.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.inmaytide.orbit.commons.business.impl.BasicServiceImpl;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.inmaytide.orbit.commons.domain.SystemUser;
 import com.inmaytide.orbit.commons.domain.dto.result.TreeNode;
 import com.inmaytide.orbit.commons.security.SecurityUtils;
@@ -25,12 +25,18 @@ import java.util.stream.Collectors;
  */
 @Primary
 @Service
-public class DictionaryServiceImpl extends BasicServiceImpl<DictionaryMapper, Dictionary> implements DictionaryService {
+public class DictionaryServiceImpl implements DictionaryService {
+
+    private final DictionaryMapper baseMapper;
 
     /**
      * 解决通过this调用内部方法无法触发AOP相关功能问题
      */
     private DictionaryService self;
+
+    public DictionaryServiceImpl(DictionaryMapper baseMapper) {
+        this.baseMapper = baseMapper;
+    }
 
     @Override
     public TreeSet<TreeNode<Dictionary>> treeByCategory(String category) {
@@ -124,4 +130,8 @@ public class DictionaryServiceImpl extends BasicServiceImpl<DictionaryMapper, Di
         this.self = self;
     }
 
+    @Override
+    public BaseMapper<Dictionary> getBaseMapper() {
+        return baseMapper;
+    }
 }
