@@ -6,7 +6,6 @@ import com.inmaytide.orbit.commons.domain.dto.result.TreeNode;
 import com.inmaytide.orbit.commons.domain.pattern.Entity;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.util.List;
 import java.util.TreeSet;
 
 /**

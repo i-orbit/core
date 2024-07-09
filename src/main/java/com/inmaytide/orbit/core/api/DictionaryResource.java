@@ -8,10 +8,7 @@ import com.inmaytide.orbit.core.service.DictionaryCategoryService;
 import com.inmaytide.orbit.core.service.DictionaryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -39,6 +36,12 @@ public class DictionaryResource {
     @Operation(summary = "查询系统当前可用的所有数据字典分类信息列表")
     public List<DictionaryCategory> findCategories() {
         return categoryService.all();
+    }
+
+    @GetMapping("/categories/{code}")
+    @Operation(summary = "查询指定数据字典分类信息(包含数据字典树)")
+    public DictionaryCategory findCategoryByCode(@PathVariable String code) {
+        return categoryService.findByCode(code);
     }
 
     @GetMapping("tree-by-category")
