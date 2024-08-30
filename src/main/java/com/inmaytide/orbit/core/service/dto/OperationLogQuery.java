@@ -16,7 +16,7 @@ import java.time.Instant;
  * @since 2022/8/22
  */
 @Schema(title = "分页查询用户操作日志过滤条件DTO")
-public class OperationLogQueryParams extends Pageable<OperationLog> implements Serializable {
+public class OperationLogQuery extends Pageable<OperationLog> implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 2930192670686893025L;

@@ -27,9 +27,9 @@ public class CustomizedMinioClient extends MinioAsyncClient {
         }
     }
 
-    public ObjectWriteResponse completeMultipartUpload(String bucketName, String objectName, String uploadId, Part[] parts) {
+    public void completeMultipartUpload(String bucketName, String objectName, String uploadId, Part[] parts) {
         try {
-            return super.completeMultipartUploadAsync(bucketName, null, objectName, uploadId, parts, null, null).get();
+            super.completeMultipartUploadAsync(bucketName, null, objectName, uploadId, parts, null, null).get();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

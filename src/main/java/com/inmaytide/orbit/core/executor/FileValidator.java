@@ -92,7 +92,7 @@ public class FileValidator implements JobAdapter {
         } else {
             onFailed(metadata, bucket, objectName);
         }
-        FileUploadUtils.delete(file);
+        FileUploadUtils.deleteQuietly(file);
     }
 
     private void onFailed(FileMetadata metadata, String bucket, String objectName) {

@@ -6,8 +6,6 @@ import com.inmaytide.orbit.commons.utils.ApplicationContextHolder;
 import com.inmaytide.orbit.commons.utils.CodecUtils;
 import com.inmaytide.orbit.commons.utils.DatetimeUtils;
 import com.inmaytide.orbit.core.configuration.ErrorCode;
-import com.inmaytide.orbit.core.configuration.FileUploaderProperties;
-import com.inmaytide.orbit.core.consts.FileCategory;
 import com.inmaytide.orbit.core.domain.FileMetadata;
 import com.inmaytide.orbit.core.service.FileMetadataService;
 import com.inmaytide.orbit.core.utils.FileUploadUtils;
@@ -42,7 +40,7 @@ public interface FileUploader extends Callable<FileMetadata> {
 
     default String getAndValidateExtension(String filename) {
         String extension = FilenameUtils.getExtension(filename);
-        if (!FileUploadUtils.isAllowExtension(extension)) {
+        if (!FileUploadUtils.isAllowedExtension(extension)) {
             throw new BadRequestException(ErrorCode.E_0x00300003);
         }
         return extension;
@@ -69,7 +67,7 @@ public interface FileUploader extends Callable<FileMetadata> {
             Path thumbnail = thumbnailGenerator.get().generate(file);
             FileUploadUtils.upload(getBucket(), MinioUtils.getObjectName(folder, thumbnailRandomName), thumbnail);
         }
-        FileUploadUtils.delete(file);
+        FileUploadUtils.deleteQuietly(file);
         return FileMetadata.builder()
                 .filename(filename)
                 .size(size)

@@ -32,7 +32,7 @@ public final class FileUploadUtils {
 
     }
 
-    public static boolean isAllowExtension(String extension) {
+    public static boolean isAllowedExtension(String extension) {
         if (StringUtils.isBlank(extension)) {
             return false;
         }
@@ -90,7 +90,7 @@ public final class FileUploadUtils {
         return ThumbnailGenerator.ALL_GENERATOR_INSTANCES.stream().filter(e -> e.support(file)).findFirst();
     }
 
-    public static void delete(Path file) {
+    public static void deleteQuietly(Path file) {
         try {
             Files.deleteIfExists(file);
         } catch (IOException e) {
