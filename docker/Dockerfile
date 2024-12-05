@@ -1,10 +1,9 @@
 FROM openjdk:21
 
-ARG NACOS_SERVER
-ARG PROFILE
-
-ENV NACOS_SERVER=${NACOS_SERVER}
-ENV PROFILE=${PROFILE}
+ENV NACOS_SERVER=127.0.0.1:8848
+ENV NACOS_USERNAME=nacos
+ENV NACOS_PASSWORD=nacos
+ENV PROFILE=prod
 
 # 替换系统apt-get默认软件源用来提升依赖下载速度, 如不需要可以去掉
 ADD /docker/sources.list /etc/apt/sources.list

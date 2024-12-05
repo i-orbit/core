@@ -14,15 +14,19 @@
     <description>core</description>
 
     <properties>
-        <minio.version>8.5.9</minio.version>
+        <minio.version>8.5.14</minio.version>
         <ip2region.version>2.7.0</ip2region.version>
         <thumbnailator.version>0.4.20</thumbnailator.version>
-        <javacv.version>1.5.10</javacv.version>
-        <javacv.ffmpeg-platform.version>6.1.1-1.5.10</javacv.ffmpeg-platform.version>
+        <javacv.version>1.5.11</javacv.version>
+        <javacv.ffmpeg-platform.version>7.1-1.5.11</javacv.ffmpeg-platform.version>
     </properties>
 
 
     <dependencies>
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -79,6 +83,11 @@
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-core</artifactId>
+            <version>11.10</version>
+        </dependency>
+        <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-afterburner</artifactId>
         </dependency>
@@ -96,7 +105,6 @@
             <artifactId>minio</artifactId>
             <version>${minio.version}</version>
         </dependency>
-        <!-- 图片缩略图 -->
         <dependency>
             <groupId>net.coobird</groupId>
             <artifactId>thumbnailator</artifactId>

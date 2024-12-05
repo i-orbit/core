@@ -21,10 +21,10 @@ import org.springframework.web.client.RestTemplate;
  * @author inmaytide
  * @since 2024/4/18
  */
-@Configuration
-@EnableWebSecurity
-@EnableMethodSecurity
-@DependsOn("exceptionResolver")
+//@Configuration
+//@EnableWebSecurity
+//@EnableMethodSecurity
+//@DependsOn("exceptionResolver")
 public class SecurityConfiguration {
 
     private final DefaultHandlerExceptionResolver exceptionResolver;
