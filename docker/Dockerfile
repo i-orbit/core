@@ -4,6 +4,7 @@ ENV NACOS_SERVER=127.0.0.1:8848
 ENV NACOS_USERNAME=nacos
 ENV NACOS_PASSWORD=nacos
 ENV PROFILE=prod
+ENV JVM_OPTS="-Xms768m -Xmx768m -Xmn256m -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=512m"
 
 # 替换系统apt-get默认软件源用来提升依赖下载速度, 如不需要可以去掉
 ADD /docker/sources.list /etc/apt/sources.list

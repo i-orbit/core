@@ -1,5 +1,7 @@
 package com.inmaytide.orbit.core;
 
+import com.inmaytide.orbit.commons.business.SystemUserService;
+import com.inmaytide.orbit.commons.domain.SystemUser;
 import com.inmaytide.orbit.core.configuration.ApplicationProperties;
 import com.inmaytide.orbit.core.utils.CustomizedMinioClient;
 import io.minio.MinioAsyncClient;
@@ -17,6 +19,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 @SpringBootApplication(scanBasePackages = {"com.inmaytide.orbit.commons", "com.inmaytide.orbit.core"})
 public class CoreApplication {
@@ -41,6 +44,11 @@ public class CoreApplication {
             LOG.error("Failed to create content cached searcher, Cause by: \n", e);
             throw e;
         }
+    }
+
+    @Bean
+    public SystemUserService systemUserService() {
+        return id -> null;
     }
 
     @Bean
