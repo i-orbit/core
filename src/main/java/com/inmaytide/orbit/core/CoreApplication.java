@@ -47,11 +47,6 @@ public class CoreApplication {
     }
 
     @Bean
-    public SystemUserService systemUserService() {
-        return id -> null;
-    }
-
-    @Bean
     public CustomizedMinioClient minioClient() {
         MinioAsyncClient client = MinioAsyncClient.builder()
                 .endpoint(props.getMinIO().getEndpoint())
