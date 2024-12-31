@@ -33,14 +33,14 @@ public class ImageThumbnailGenerator implements ThumbnailGenerator {
     public Path generate(Path file) throws Exception {
         support(file);
         FileUploaderProperties.Thumbnail configuration = getThumbnailConfiguration();
-        Path output = Files.createTempFile(CodecUtils.randomUUID(), "." + configuration.getOutputFormat());
+        Path output = Files.createTempFile(CodecUtils.randomUUID(), "." + configuration.getFormat());
         try (InputStream is = Files.newInputStream(file); OutputStream os = Files.newOutputStream(output, StandardOpenOption.WRITE)) {
             BufferedImage thumbnail = Thumbnails.of(is)
                     .size(configuration.getWidth(), configuration.getHeight())
-                    .outputQuality(configuration.getOutputQuality())
-                    .outputFormat(configuration.getOutputFormat())
+                    .outputQuality(configuration.getQuality())
+                    .outputFormat(configuration.getFormat())
                     .asBufferedImage();
-            ImageIO.write(thumbnail, configuration.getOutputFormat(), os);
+            ImageIO.write(thumbnail, configuration.getFormat(), os);
         }
         return output;
     }

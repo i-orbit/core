@@ -53,9 +53,9 @@ public class FileUploaderProperties {
 
         private Integer height = 150;
 
-        private float outputQuality = 0.75f;
+        private float quality = 0.75f;
 
-        private String outputFormat = "jpg";
+        private String format = "jpg";
 
         public Integer getWidth() {
             return width;
@@ -73,20 +73,20 @@ public class FileUploaderProperties {
             this.height = height;
         }
 
-        public float getOutputQuality() {
-            return outputQuality;
+        public float getQuality() {
+            return quality;
         }
 
-        public void setOutputQuality(float outputQuality) {
-            this.outputQuality = outputQuality;
+        public void setQuality(float quality) {
+            this.quality = quality;
         }
 
-        public String getOutputFormat() {
-            return StringUtils.lowerCase(outputFormat);
+        public String getFormat() {
+            return format;
         }
 
-        public void setOutputFormat(String outputFormat) {
-            this.outputFormat = outputFormat;
+        public void setFormat(String format) {
+            this.format = format;
         }
     }
 

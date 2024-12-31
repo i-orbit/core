@@ -37,7 +37,7 @@ public class VideoThumbnailGenerator implements ThumbnailGenerator {
     public Path generate(Path file) throws Exception {
         support(file);
         FileUploaderProperties.Thumbnail configuration = getThumbnailConfiguration();
-        Path res = Files.createTempFile(CodecUtils.randomUUID(), "." + configuration.getOutputFormat());
+        Path res = Files.createTempFile(CodecUtils.randomUUID(), "." + configuration.getFormat());
         try (FFmpegFrameGrabber grabber = FFmpegFrameGrabber.createDefault(file.toFile()); OpenCVFrameConverter.ToIplImage converter = new OpenCVFrameConverter.ToIplImage()) {
             grabber.start();
             String rotate = grabber.getVideoMetadata("rotate");
@@ -58,11 +58,11 @@ public class VideoThumbnailGenerator implements ThumbnailGenerator {
                     BufferedImage image = Java2DFrameUtils.toBufferedImage(frame);
                     BufferedImage thumbnail = Thumbnails.of(image)
                             .size(configuration.getWidth(), configuration.getHeight())
-                            .outputQuality(configuration.getOutputQuality())
-                            .outputFormat(configuration.getOutputFormat())
+                            .outputQuality(configuration.getQuality())
+                            .outputFormat(configuration.getFormat())
                             .asBufferedImage();
                     try (OutputStream os = Files.newOutputStream(res)) {
-                        ImageIO.write(thumbnail, configuration.getOutputFormat(), os);
+                        ImageIO.write(thumbnail, configuration.getFormat(), os);
                     }
                     break;
                 }

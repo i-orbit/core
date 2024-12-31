@@ -28,6 +28,6 @@ public interface ThumbnailGenerator {
 
     default String getOutputNameSuffix() {
         FileUploaderProperties.Thumbnail configuration = getThumbnailConfiguration();
-        return "_%dx%d".formatted(configuration.getWidth(), configuration.getHeight()) + "." + configuration.getOutputFormat();
+        return "_%dx%d".formatted(configuration.getWidth(), configuration.getHeight()) + "." + configuration.getFormat();
     }
 }
