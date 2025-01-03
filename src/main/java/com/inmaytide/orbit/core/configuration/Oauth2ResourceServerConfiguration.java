@@ -26,7 +26,7 @@ public class Oauth2ResourceServerConfiguration extends Oauth2ResourceServerConfi
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, DefaultHandlerExceptionResolver exceptionResolver, ApplicationProperties properties) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return super.configure(http).authorizeHttpRequests(c -> {
             c.requestMatchers("/v3/api-docs").permitAll();
             c.requestMatchers(HttpMethod.GET, "/api/system/properties").permitAll();
