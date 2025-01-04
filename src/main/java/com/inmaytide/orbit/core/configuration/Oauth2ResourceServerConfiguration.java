@@ -1,7 +1,7 @@
 package com.inmaytide.orbit.core.configuration;
 
 import com.inmaytide.exception.web.servlet.DefaultHandlerExceptionResolver;
-import com.inmaytide.orbit.commons.security.Oauth2ResourceServerConfigurationAdapter;
+import com.inmaytide.orbit.commons.security.OAuth2ResourceServerConfigurationAdapter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
@@ -19,7 +19,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @EnableMethodSecurity
 @DependsOn("exceptionResolver")
-public class Oauth2ResourceServerConfiguration extends Oauth2ResourceServerConfigurationAdapter {
+public class Oauth2ResourceServerConfiguration extends OAuth2ResourceServerConfigurationAdapter {
 
     public Oauth2ResourceServerConfiguration(DefaultHandlerExceptionResolver exceptionResolver, ApplicationProperties properties) {
         super(exceptionResolver, properties);
