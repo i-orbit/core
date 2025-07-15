@@ -1,5 +1,6 @@
 package com.inmaytide.orbit.core.utils;
 
+import com.inmaytide.orbit.core.configuration.FileUploaderProperties;
 import io.minio.*;
 import io.minio.errors.InsufficientDataException;
 import io.minio.errors.InternalException;
@@ -89,6 +90,30 @@ public class CustomizedMinioClient {
     public void removeObject(RemoveObjectArgs args) {
         try {
             client.removeObject(args).get();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void putObject(PutObjectArgs args) {
+        try {
+            client.putObject(args);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public CompletableFuture<Boolean> bucketExists(BucketExistsArgs args) {
+        try {
+            return client.bucketExists(args);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void makeBucket(MakeBucketArgs args) {
+        try {
+            client.makeBucket(args).get();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

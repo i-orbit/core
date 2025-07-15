@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.inmaytide.orbit.commons.constants.Bool;
 import com.inmaytide.orbit.commons.metrics.JobAdapter;
 import com.inmaytide.orbit.commons.utils.CodecUtils;
+import com.inmaytide.orbit.commons.utils.NamedStopWatch;
 import com.inmaytide.orbit.core.configuration.FileUploaderProperties;
 import com.inmaytide.orbit.core.consts.FileCategory;
 import com.inmaytide.orbit.core.domain.FileMetadata;
@@ -82,7 +83,7 @@ public class FileValidator implements JobAdapter {
     }
 
     @Override
-    public void exec(JobExecutionContext context) {
+    public void exec(JobExecutionContext context, NamedStopWatch stopWatch) {
         List<FileMetadata> list = fileMetadataMapper.selectList(Wrappers.lambdaQuery(FileMetadata.class).eq(FileMetadata::getVerified, Bool.N));
         if (list.isEmpty()) {
             log.debug("No unverified files");
