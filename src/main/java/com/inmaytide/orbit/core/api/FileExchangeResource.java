@@ -61,7 +61,7 @@ public class FileExchangeResource {
 
     @GetMapping("download")
     @Operation(summary = "下载文件")
-    public void download(@RequestParam Long id, HttpServletResponse response) {
+    public void download(@RequestParam String id, HttpServletResponse response) {
         fileExchangeService.download(id, response);
     }
 

@@ -27,17 +27,35 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * 大文件上传时文件的SHA256值是由前端传入，后端无法及时验证机生成缩略图；
- * 所以需要定时任务定时验证这些文件的SHA256值和生成相关缩略图信息
- * <br/><br/>
- * 执行步骤
+ * Scheduled task for verifying the SHA-256 checksums of large files and generating thumbnails.
+ * <p>
+ * Since the SHA-256 value of large files is provided by the frontend during upload,
+ * the backend cannot verify the integrity or generate thumbnails in real time.
+ * This scheduled task handles those files that are pending verification.
+ * </p>
+ *
+ * <p><b>Execution steps:</b></p>
  * <ol>
- *     <li>查询系统中所有未删除出且未验证的文件信息列表, 遍历执行后续操作</li>
- *     <li>下载文件到本地临时目录</li>
- *     <li>验证文件的SHA256值是否与已存入值相等</li>
- *     <li>相等 - 更新验证状态为已验证, 判断是否需要生成缩略图, 如果需要生成缩略图并保存</li>
- *     <li>无效 - 更新验证状态，因为验证无效时文件可能是通过非法途径上传，直接删除MinIO中存储的文件，并将所有文件引用删除，发送邮件通知系统管理员</li>
- *     <li>删除本地临时文件，释放资源</li>
+ *     <li>Query all non-deleted files that are not yet verified and process them one by one</li>
+ *     <li>Download each file to a temporary local directory</li>
+ *     <li>Compute the actual SHA-256 value and compare it to the stored value</li>
+ *     <li>
+ *         If the values match:
+ *         <ul>
+ *             <li>Update the verification status to "verified"</li>
+ *             <li>If supported, generate and save the corresponding thumbnail</li>
+ *         </ul>
+ *     </li>
+ *     <li>
+ *         If the values do not match:
+ *         <ul>
+ *             <li>Update the verification status to "failed"</li>
+ *             <li>Delete the file from MinIO storage</li>
+ *             <li>Remove all associated references to the file</li>
+ *             <li>Send an email notification to system administrators</li>
+ *         </ul>
+ *     </li>
+ *     <li>Delete the temporary local file to free up resources</li>
  * </ol>
  *
  * @author inmaytide
@@ -88,14 +106,14 @@ public class FileValidator implements JobAdapter {
         }
         String actualSHA256 = CodecUtils.getSHA256Value(file);
         if (Objects.equals(actualSHA256, metadata.getSha256())) {
-            onSuccess(metadata, file, bucket, objectName);
+            onMatched(metadata, file, bucket, objectName);
         } else {
-            onFailed(metadata, bucket, objectName);
+            onMismatched(metadata, bucket, objectName);
         }
         FileUploadUtils.deleteQuietly(file);
     }
 
-    private void onFailed(FileMetadata metadata, String bucket, String objectName) {
+    private void onMismatched(FileMetadata metadata, String bucket, String objectName) {
         log.debug("文件{id = {}}无效", metadata.getId());
         metadata.setVerified(Bool.Y);
         metadata.setDeleted(Bool.Y);
@@ -109,7 +127,7 @@ public class FileValidator implements JobAdapter {
         }
     }
 
-    private void onSuccess(FileMetadata metadata, Path file, String bucket, String objectName) {
+    private void onMatched(FileMetadata metadata, Path file, String bucket, String objectName) {
         log.debug("文件{id = {}}验证成功", metadata.getId());
         metadata.setVerified(Bool.Y);
         Optional<ThumbnailGenerator> thumbnailGenerator = FileUploadUtils.getThumbnailGenerator(file);

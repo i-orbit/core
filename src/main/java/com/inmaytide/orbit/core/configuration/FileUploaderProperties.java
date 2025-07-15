@@ -4,6 +4,8 @@ import com.inmaytide.orbit.commons.utils.CommonUtils;
 import com.inmaytide.orbit.core.consts.FileCategory;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;

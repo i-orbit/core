@@ -32,16 +32,25 @@ public final class FileUploadUtils {
 
     }
 
+    /**
+     * 判断扩展名是否在系统允许的范围内
+     *
+     * @param extension 文件扩展名，可带或不带 "."
+     * @return true if allowed
+     */
     public static boolean isAllowedExtension(String extension) {
         if (StringUtils.isBlank(extension)) {
             return false;
         }
-        final String forMatching = StringUtils.startsWith(extension, ".") ? extension.substring(1) : extension;
+        String ext = StringUtils.removeStart(extension, ".");
         return Stream.of(getAllowedExtensions().all())
                 .flatMap(Collection::stream)
-                .anyMatch(ext -> ext.equalsIgnoreCase(forMatching));
+                .anyMatch(e -> e.equalsIgnoreCase(ext));
     }
 
+    /**
+     * 判断扩展名是否属于指定文件类别
+     */
     public static boolean isFileCategory(FileCategory category, String extension) {
         if (StringUtils.isBlank(extension)) {
             return false;
@@ -59,6 +68,9 @@ public final class FileUploadUtils {
         MinioUtils.getMinioClient().makeBucket(MakeBucketArgs.builder().bucket(bucket).build());
     }
 
+    /**
+     * 上传文件到 MinIO
+     */
     public static void upload(String bucket, String address, Path file) throws Exception {
         createBucketIfNotExist(bucket);
         PutObjectArgs args = PutObjectArgs.builder().bucket(bucket)

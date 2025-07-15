@@ -26,5 +26,5 @@ public interface FileExchangeService {
 
     FileMetadata completeMultipartUpload(CompleteMultipartUpload params);
 
-    void download(Long id, HttpServletResponse response);
+    void download(String id, HttpServletResponse response);
 }

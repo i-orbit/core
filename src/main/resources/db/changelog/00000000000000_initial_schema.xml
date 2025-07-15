@@ -3,14 +3,14 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
-    <changeSet id="000000000000001" author="inmaytide">
+    <changeSet id="1750830541447-1" author="inmaytide">
         <createTable tableName="operation_log" remarks="用户操作日志">
-            <column name="id" type="bigint" remarks="唯一标识">
+            <column name="id" type="varchar(32)" remarks="唯一标识">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="tenant_id" type="bigint" remarks="所属租户"/>
-            <column name="operator" type="bigint" remarks="操作人"/>
-            <column name="operation_time" type="timestamp" remarks="操作时间"/>
+            <column name="tenant_id" type="varchar(32)" remarks="所属租户"/>
+            <column name="operate_by" type="varchar(32)" remarks="操作人"/>
+            <column name="operate_at" type="timestamp" remarks="操作时间"/>
             <column name="result" type="varchar(16)" remarks="操作结果"/>
             <column name="client_description" type="varchar(512)" remarks="客户端描述"/>
             <column name="ip_address" type="varchar(128)" remarks="IP地址(归属地)"/>
@@ -26,9 +26,9 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="000000000000002" author="inmaytide">
+    <changeSet id="1750830545240-1" author="inmaytide">
         <createTable tableName="file_metadata" remarks="文件库文件基础信息">
-            <column name="id" type="bigint" remarks="唯一标识">
+            <column name="id" type="varchar(32)" remarks="唯一标识">
                 <constraints primaryKey="true"/>
             </column>
             <column name="name" type="varchar(200)" remarks="文件名称(不包含扩展名)"/>
@@ -39,20 +39,20 @@
             <column name="sha256" type="varchar(100)" remarks="文件SHA256值"/>
             <column name="verified" type="varchar(2)" remarks="验证标识"/>
             <column name="deleted" type="varchar(2)" remarks="删除标识" defaultValue="N"/>
-            <column name="delete_time" type="timestamp" remarks="删除时间"/>
+            <column name="deleted_at" type="timestamp" remarks="删除时间"/>
         </createTable>
         <createTable tableName="file_association" remarks="文件库文件引用关联信息">
-            <column name="id" type="bigint" remarks="唯一标识">
+            <column name="id" type="varchar(32)" remarks="唯一标识">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="file_id" type="bigint" remarks="文件库文件信息唯一标识"/>
+            <column name="file_id" type="varchar(32)" remarks="文件库文件信息唯一标识"/>
             <column name="business" type="varchar(50)" remarks="业务类型"/>
-            <column name="business_data_id" type="bigint" remarks="关联业务对象唯一标识"/>
+            <column name="business_data_id" type="varchar(32)" remarks="关联业务对象唯一标识"/>
             <column name="business_data_description" type="varchar(200)" remarks="关联业务对象说明"/>
-            <column name="created_time" type="timestamp" remarks="创建时间"/>
-            <column name="created_by" type="bigint" remarks="创建人"/>
-            <column name="modified_time" type="timestamp" remarks="最后修改时间"/>
-            <column name="modified_by" type="bigint" remarks="最后修改人"/>
+            <column name="created_at" type="timestamp" remarks="创建时间"/>
+            <column name="created_by" type="varchar(32)" remarks="创建人"/>
+            <column name="updated_at" type="timestamp" remarks="最后修改时间"/>
+            <column name="updated_by" type="varchar(32)" remarks="最后修改人"/>
             <column name="deleted" type="varchar(2)" remarks="逻辑删除标识" defaultValue="N">
                 <constraints nullable="false"/>
             </column>
@@ -60,9 +60,9 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="000000000000003" author="inmaytide">
+    <changeSet id="1750830550056-1" author="inmaytide">
         <createTable tableName="dictionary_category" remarks="数据字典分类">
-            <column name="id" type="bigint" remarks="唯一标识">
+            <column name="id" type="varchar(32)" remarks="唯一标识">
                 <constraints primaryKey="true"/>
             </column>
             <column name="code" type="varchar(50)" remarks="分类编码">
@@ -75,7 +75,7 @@
             <column name="sequence" type="int" remarks="排序字段"/>
         </createTable>
         <createTable tableName="dictionary" remarks="数据字典">
-            <column name="id" type="bigint" remarks="唯一标识">
+            <column name="id" type="varchar(32)" remarks="唯一标识">
                 <constraints primaryKey="true"/>
             </column>
             <column name="category" type="varchar(50)" remarks="分类编码"/>
@@ -86,13 +86,13 @@
             <column name="option_value" type="varchar(50)" remarks="数据字典作为下拉选项时的VALUE值, 为空时取字典编码值"/>
             <column name="sharing" type="varchar(10)" remarks="共享级别"/>
             <column name="sequence" type="int" remarks="排序字段"/>
-            <column name="tenant" type="bigint" remarks="所属租户"/>
-            <column name="area" type="bigint" remarks="所属区域"/>
-            <column name="organization" type="bigint" remarks="所属组织"/>
-            <column name="created_time" type="timestamp" remarks="创建时间"/>
-            <column name="created_by" type="bigint" remarks="创建人"/>
-            <column name="modified_time" type="timestamp" remarks="最后修改时间"/>
-            <column name="modified_by" type="bigint" remarks="最后修改人"/>
+            <column name="tenant" type="varchar(32)" remarks="所属租户"/>
+            <column name="area" type="varchar(32)" remarks="所属区域"/>
+            <column name="organization" type="varchar(32)" remarks="所属组织"/>
+            <column name="created_at" type="timestamp" remarks="创建时间"/>
+            <column name="created_by" type="varchar(32)" remarks="创建人"/>
+            <column name="updated_at" type="timestamp" remarks="最后修改时间"/>
+            <column name="updated_by" type="varchar(32)" remarks="最后修改人"/>
             <column name="deleted" type="varchar(2)" remarks="逻辑删除标识" defaultValue="N">
                 <constraints nullable="false"/>
             </column>
@@ -101,21 +101,21 @@
         <addUniqueConstraint tableName="dictionary" columnNames="category, code"/>
     </changeSet>
 
-    <changeSet id="000000000000004" author="inmaytide">
+    <changeSet id="1750830554840-1" author="inmaytide">
         <createTable tableName="geographic_coordinate" remarks="地理坐标信息">
-            <column name="business_data_id" type="bigint" remarks="业务数据唯一标识"/>
+            <column name="business_data_id" type="varchar(32)" remarks="业务数据唯一标识"/>
             <column name="longitude" type="decimal(16, 10)" remarks="经度"/>
             <column name="latitude" type="decimal(16, 10)" remarks="纬度"/>
         </createTable>
         <addPrimaryKey tableName="geographic_coordinate" columnNames="business_data_id, longitude, latitude"/>
-        <createIndex tableName="geographic_coordinate" indexName="idx_bd_id">
+        <createIndex tableName="geographic_coordinate" indexName="index_bd_id">
             <column name="business_data_id"/>
         </createIndex>
     </changeSet>
 
-    <changeSet id="000000000000005" author="inmaytide">
+    <changeSet id="1750830557571-1" author="inmaytide">
         <createTable tableName="system_property" remarks="系统属性配置">
-            <column name="tenant_id" type="bigint" remarks="租户ID"/>
+            <column name="tenant_id" type="varchar(32)" remarks="租户ID"/>
             <column name="name" type="varchar(100)" remarks="属性名称"/>
             <column name="description" type="varchar(100)" remarks="属性描述"/>
             <column name="value" type="varchar(100)" remarks="属性值"/>
@@ -123,13 +123,42 @@
             <column name="exposed" type="varchar(2)" remarks="系统外部是否可见"/>
             <column name="global" type="varchar(2)" remarks="是否全局有效"/>
         </createTable>
-        <sql>
-            insert into system_property(tenant_id, name, description, value, authenticated, exposed, global) values
-                (3721, 'force.change-password.when-necessary', '必要时是否强制修改密码', 'Y', 'Y', 'N', 'Y'),
-                (3721, 'operation-log.retention.days', '系统最大保留多长时间的用户审计操作日志', '180', 'Y', 'N', 'Y'),
-                (3721, 'user-password.valid.days', '用户密码有效天数', '180', 'Y', 'N', 'Y'),
-                (3721, 'system.name', '系统名称', 'ORBIT-智慧互联', 'N', 'N', 'Y');
-        </sql>
+        <insert tableName="system_property">
+            <column name="tenant_id" value="018ea39f9f86e8d1b3e21d497dcd9caa"/>
+            <column name="name" value="force.change-password.when-necessary"/>
+            <column name="description" value="必要时是否强制修改密码"/>
+            <column name="value" value="Y"/>
+            <column name="authenticated" value="Y"/>
+            <column name="exposed" value="N"/>
+            <column name="global" value="Y"/>
+        </insert>
+        <insert tableName="system_property">
+            <column name="tenant_id" value="018ea39f9f86e8d1b3e21d497dcd9caa"/>
+            <column name="name" value="operation-log.retention.days"/>
+            <column name="description" value="系统最大保留多长时间的用户审计操作日志"/>
+            <column name="value" value="180"/>
+            <column name="authenticated" value="Y"/>
+            <column name="exposed" value="N"/>
+            <column name="global" value="Y"/>
+        </insert>
+        <insert tableName="system_property">
+            <column name="tenant_id" value="018ea39f9f86e8d1b3e21d497dcd9caa"/>
+            <column name="name" value="user-password.valid.days"/>
+            <column name="description" value="用户密码有效天数"/>
+            <column name="value" value="180"/>
+            <column name="authenticated" value="Y"/>
+            <column name="exposed" value="N"/>
+            <column name="global" value="Y"/>
+        </insert>
+        <insert tableName="system_property">
+            <column name="tenant_id" value="018ea39f9f86e8d1b3e21d497dcd9caa"/>
+            <column name="name" value="system.name"/>
+            <column name="description" value="系统名称"/>
+            <column name="value" value="ORBIT-智慧互联"/>
+            <column name="authenticated" value="N"/>
+            <column name="exposed" value="N"/>
+            <column name="global" value="Y"/>
+        </insert>
     </changeSet>
 
 </databaseChangeLog>

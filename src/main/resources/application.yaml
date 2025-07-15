@@ -17,3 +17,7 @@ spring:
                 username: nacos
                 password: nacos
                 namespace: ${spring.profiles.active}
+logging:
+    level:
+      root: info
+      com.inmaytide.exception: debug

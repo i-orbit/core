@@ -33,6 +33,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.WritableByteChannel;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.Future;
@@ -127,7 +131,7 @@ public class FileExchangeServiceImpl implements FileExchangeService {
                     .bucket(info.getBucket())
                     .object(info.getObjectName())
                     .build();
-            StatObjectResponse statObjectResponse = minioClient.statObject(args).get();
+            StatObjectResponse statObjectResponse = minioClient.statObject(args);
             FileMetadata res = FileMetadata.builder()
                     .filename(info.getOriginalFilename())
                     .size(statObjectResponse.size())
@@ -142,7 +146,7 @@ public class FileExchangeServiceImpl implements FileExchangeService {
     }
 
     @Override
-    public void download(Long id, HttpServletResponse response) {
+    public void download(String id, HttpServletResponse response) {
         FileMetadata metadata = fileMetadataService.get(id).orElseThrow(() -> new ObjectNotFoundException(ErrorCode.E_0x00300007, String.valueOf(id)));
         try {
             GetObjectArgs args = GetObjectArgs.builder()
@@ -155,11 +159,14 @@ public class FileExchangeServiceImpl implements FileExchangeService {
             response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
             response.addHeader("Content-Disposition", "attachment;filename=" + displayFileName);
             minioClient.getObject(args).thenAccept(res -> {
-                try (BufferedInputStream is = new BufferedInputStream(res); OutputStream os = new BufferedOutputStream(response.getOutputStream())) {
-                    byte[] buffer = new byte[4096];
-                    int len;
-                    while ((len = is.read(buffer)) > 0) {
-                        os.write(buffer, 0, len);
+                try (ReadableByteChannel ic = Channels.newChannel(res); WritableByteChannel oc = Channels.newChannel(response.getOutputStream())) {
+                    ByteBuffer buffer = ByteBuffer.allocateDirect(4096);
+                    while (ic.read(buffer) != -1) {
+                        buffer.flip();
+                        while (buffer.hasRemaining()) {
+                            oc.write(buffer);
+                        }
+                        buffer.clear();
                     }
                 } catch (Exception e) {
                     throw new RuntimeException(e);
