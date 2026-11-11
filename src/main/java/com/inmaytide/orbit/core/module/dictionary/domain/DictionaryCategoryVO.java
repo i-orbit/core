@@ -10,7 +10,7 @@ import lombok.Data;
  * @since 2026/11/6
  */
 @Data
-@Schema(description = "数据字典分类")
+@Schema(description = "数据字典分类", name = "数据字典分类")
 public class DictionaryCategoryVO {
 
     @Schema(description = "主键标识")

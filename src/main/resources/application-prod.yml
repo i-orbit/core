@@ -7,6 +7,18 @@ spring:
         password: zaq1@WSX
         namespace: DEV_H160
         file-extension: yml
+
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: never

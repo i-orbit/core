@@ -33,7 +33,7 @@ spec:
               value: Asia/Shanghai
             - name: NACOS_SERVER
               value: "nacos.orbit.svc.cluster.local:8848"
-            - name: NACOS_USERNAME
+            - name: NACOS_USER
               value: "nacos"
             - name: NACOS_PASSWORD
               value: "zaq1@WSX"
