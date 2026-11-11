@@ -29,6 +29,8 @@ spec:
               containerPort: 30701
               protocol: TCP
           env:
+            - name: TZ
+              value: Asia/Shanghai
             - name: NACOS_SERVER
               value: "nacos.orbit.svc.cluster.local:8848"
             - name: NACOS_USERNAME
