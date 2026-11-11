@@ -23,7 +23,6 @@ pipeline {
             steps {
                 script {
                     echo "JAVA_HOME=$JAVA_HOME"
-                    java -version
                     sh 'mvn clean package -Dmaven.test.skip=true -Porbit'
                 }
             }
