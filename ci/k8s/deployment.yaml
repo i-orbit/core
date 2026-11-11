@@ -7,6 +7,7 @@ metadata:
     app: core
 spec:
   replicas: 1
+  revisionHistoryLimit: 1
   selector:
     matchLabels:
       app: core
