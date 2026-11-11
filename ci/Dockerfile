@@ -1,4 +1,4 @@
-FROM openjdk:26
+FROM eclipse-temurin:26-jdk
 
 # 替换系统apt-get默认软件源用来提升依赖下载速度, 如不需要可以去掉
 ADD /ci/sources.list /etc/apt/sources.list
