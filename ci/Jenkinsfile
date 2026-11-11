@@ -1,0 +1,108 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'apache-maven-3.10.0'
+    }
+
+    parameters {
+        string(
+            name: 'VERSION',
+            defaultValue: '3.0.0',
+            description: 'Version'
+        )
+    }
+
+    environment {
+        SERVICE_NAME    = 'core'
+    }
+
+    stages {
+        stage('Build Maven Project') {
+            steps {
+                script {
+                    sh 'mvn clean package -Dmaven.test.skip=true -Porbit'
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh """
+                        docker build \
+                            --platform linux/amd64 \
+                            -f ci/Dockerfile \
+                            -t orbit/${env.SERVICE_NAME}:${params.VERSION} \
+                            .
+                    """
+                }
+            }
+        }
+
+        stage('Push Harbor') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'harbor-credentials',
+                        usernameVariable: 'HARBOR_USER',
+                        passwordVariable: 'HARBOR_PASSWORD'
+                    )
+                ]) {
+                    sh '''#!/bin/bash
+                        set -e
+
+                        echo "========== Harbor Configuration =========="
+                        echo "Harbor: $HARBOR"
+                        echo "Harbor User: $HARBOR_USER"
+                        echo "Image: orbit/$SERVICE_NAME:$VERSION"
+
+                        echo "========== Login Harbor =========="
+                        echo "$HARBOR_PASSWORD" | docker login "$HARBOR" \
+                            -u "$HARBOR_USER" \
+                            --password-stdin
+
+                        echo "========== Tag Image =========="
+                        docker tag \
+                            "orbit/$SERVICE_NAME:$VERSION" \
+                            "$HARBOR/orbit/$SERVICE_NAME:$VERSION"
+
+                        echo "========== Push Image =========="
+                        docker push "$HARBOR/orbit/$SERVICE_NAME:$VERSION"
+
+                        echo "========== Logout Harbor =========="
+                        docker logout "$HARBOR"
+
+                        echo "Harbor push completed!"
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy Kubernetes') {
+            steps {
+                script {
+                    sh '''#!/bin/bash
+                        set -euo pipefail
+                        echo "========== Deploy Kubernetes =========="
+                        kubectl apply -k ci/k8s
+                        echo "========== Update Image =========="
+                        kubectl set image \
+                            deployment/$SERVICE_NAME \
+                            $SERVICE_NAME=$HARBOR/orbit/$SERVICE_NAME:$VERSION \
+                            -n orbit
+                        echo "========== Rollout Status =========="
+                        kubectl rollout status \
+                            deployment/$SERVICE_NAME \
+                            -n orbit \
+                            --timeout=300s
+                        echo "========== Deployment Result =========="
+                        kubectl get pods -n orbit -o wide
+                    '''
+                }
+            }
+        }
+
+    }
+
+}
