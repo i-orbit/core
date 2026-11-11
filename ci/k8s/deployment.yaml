@@ -38,7 +38,7 @@ spec:
             - name: NACOS_PASSWORD
               value: "zaq1@WSX"
             - name: NACOS_NAMESPACE
-              value: "DEV_H160"
+              value: "PROD_H160"
             - name: PROFILE
               value: "prod"
             - name: JVM_OPTS
