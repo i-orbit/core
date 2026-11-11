@@ -28,7 +28,19 @@ spec:
             - name: http
               containerPort: 30701
               protocol: TCP
-
+          env:
+            - name: NACOS_SERVER
+              value: "nacos.orbit.svc.cluster.local:8848"
+            - name: NACOS_USERNAME
+              value: "nacos"
+            - name: NACOS_PASSWORD
+              value: "zaq1@WSX"
+            - name: NACOS_NAMESPACE
+              value: "DEV_H160"
+            - name: PROFILE
+              value: "prod"
+            - name: JVM_OPTS
+              value: "-Xms512m -Xmx1024m"
           resources:
             requests:
               cpu: 200m
