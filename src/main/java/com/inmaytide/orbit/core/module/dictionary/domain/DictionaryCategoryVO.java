@@ -1,9 +1,10 @@
 package com.inmaytide.orbit.core.module.dictionary.domain;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.inmaytide.orbit.framework.core.domain.dto.TreeNode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * @author inmaytide
@@ -12,10 +13,6 @@ import lombok.Data;
 @Data
 @Schema(description = "数据字典分类", name = "数据字典分类")
 public class DictionaryCategoryVO {
-
-    @Schema(description = "主键标识")
-    @TableId(value = "id", type = IdType.ASSIGN_ID)
-    private String id;
 
     @Schema(description = "上级分类主键标识, 根目录为NULL")
     private String parentId;
@@ -40,5 +37,8 @@ public class DictionaryCategoryVO {
 
     @Schema(description = "字典项允许最大层级")
     private Integer maxAllowedLevel;
+
+    @Schema(description = "数据字典项树(查询分类列表时该字段返回NULL)")
+    private List<TreeNode<DictionaryItemVO>> items;
 
 }

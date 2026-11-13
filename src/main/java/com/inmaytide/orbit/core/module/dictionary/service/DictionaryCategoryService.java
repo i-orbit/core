@@ -3,6 +3,7 @@ package com.inmaytide.orbit.core.module.dictionary.service;
 import com.inmaytide.orbit.core.module.dictionary.domain.DictionaryCategoryVO;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author inmaytide
@@ -10,6 +11,8 @@ import java.util.List;
  */
 public interface DictionaryCategoryService {
 
-    List<DictionaryCategoryVO> findAll();
+    List<DictionaryCategoryVO> listAll();
+
+    Optional<DictionaryCategoryVO> getByCode(String code);
 
 }

@@ -57,6 +57,10 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-kafka</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson-spring-boot-starter</artifactId>
             <version>${redisson.version}</version>
@@ -111,6 +115,16 @@
         <dependency>
             <groupId>com.inmaytide.orbit</groupId>
             <artifactId>framework-security</artifactId>
+            <version>${framework.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.inmaytide.orbit</groupId>
+            <artifactId>framework-service-clients</artifactId>
+            <version>${framework.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.inmaytide.orbit</groupId>
+            <artifactId>framework-log</artifactId>
             <version>${framework.version}</version>
         </dependency>
 

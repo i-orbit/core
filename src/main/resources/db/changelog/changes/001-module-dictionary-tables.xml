@@ -44,10 +44,23 @@
     </changeSet>
 
     <changeSet id="002-create-dictionary-item-table" author="inmaytide" objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
-        <createTable tableName="dictionary_item" remarks="字典分类表">
+        <createTable tableName="dictionary_item" remarks="字典项表">
             <column name="id" type="varchar(32)">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
+            <column name="tenant_id" type="varchar(32)" remarks="所属租户ID"/>
+            <column name="category_id" type="varchar(32)" remarks="所属分类ID"/>
+            <column name="parent_id" type="varchar(32)" remarks="父级字典项ID"/>
+            <column name="code" type="varchar(64)" remarks="字典项编码">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="name" type="varchar(64)" remarks="字典项名称">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(256)" remarks="描述"/>
+            <column name="display_order" type="int" defaultValueNumeric="0" remarks="排序号"/>
+            <column name="status" type="int" defaultValueNumeric="1" remarks="状态：0=禁用，1=启用"/>
+            <column name="path" type="varchar(512)" remarks="物化路径"/>
             <!-- 审计字段 -->
             <column name="created_by" type="varchar(32)" remarks="创建人"/>
             <column name="created_at" type="timestamp" defaultValueDate="now()" remarks="创建时间">
@@ -64,6 +77,10 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+        <sql>
+            INSERT INTO `core`.`dictionary_item` (`id`, `tenant_id`, `category_id`, `parent_id`, `code`, `name`, `description`, `display_order`, `status`, `path`, `created_by`, `created_at`, `updated_by`, `updated_at`, `version`, `deleted`) VALUES ('019cbb82a7e071d3b42f8a619c035e21', NULL, '019a8f42c7b071a2a5d3e9c4816f0b23', NULL, 'GENDER_MALE', '男', NULL, 0, 1, NULL, '9999', '2026-11-11 17:08:08', '9999', '2026-11-11 17:08:08', 0, 0);
+            INSERT INTO `core`.`dictionary_item` (`id`, `tenant_id`, `category_id`, `parent_id`, `code`, `name`, `description`, `display_order`, `status`, `path`, `created_by`, `created_at`, `updated_by`, `updated_at`, `version`, `deleted`) VALUES ('019cbb82a7e172a4a91e6f83d5b027c1', NULL, '019a8f42c7b071a2a5d3e9c4816f0b23', NULL, 'GENDER_FEMALE', '女', NULL, 1, 1, NULL, '9999', '2026-11-11 17:09:16', '9999', '2026-11-11 17:09:16', 0, 0);
+        </sql>
     </changeSet>
 
 

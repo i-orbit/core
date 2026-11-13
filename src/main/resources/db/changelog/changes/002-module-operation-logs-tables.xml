@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    
+    <changeSet id="001-create-operation-log-table" author="inmaytide">
+        <createTable tableName="operation_log" remarks="操作审计日志">
+            <column name="id" type="varchar(32)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <!-- 租户及操作人 -->
+            <column name="tenant_id" type="varchar(32)" remarks="所属租户ID"/>
+            <column name="operated_by" type="varchar(32)" remarks="操作人用户ID"/>
+            <column name="operated_at" type="timestamp" remarks="操作时间"/>
+
+            <!-- 操作信息 -->
+            <column name="operation_type" type="varchar(32)" remarks="操作类型"/>
+            <column name="operation" type="varchar(128)" remarks="操作描述"/>
+            <column name="module" type="varchar(64)" remarks="微服务模块名称"/>
+
+            <!-- 操作对象 -->
+            <column name="resource_type" type="varchar(64)" remarks="操作对象类型"/>
+            <column name="resource_id" type="varchar(128)" remarks="操作对象ID"/>
+
+            <!-- 请求信息 -->
+            <column name="source_ip" type="varchar(64)" remarks="请求来源IP"/>
+            <column name="user_agent" type="varchar(500)" remarks="用户客户端信息"/>
+            <column name="request_id" type="varchar(32)" remarks="请求唯一标识"/>
+            <column name="trace_id" type="varchar(32)" remarks="请求链路标识"/>
+            <column name="http_method" type="varchar(8)" remarks="HTTP请求Method"/>
+            <column name="url" type="varchar(1000)" remarks="请求路径"/>
+
+            <!-- 执行结果 -->
+            <column name="operate_result" type="int" remarks="操作结果"/>
+            <column name="duration" type="bigint" remarks="请求耗时(ms)"/>
+            <column name="error_description" type="varchar(2048)" remarks="错误描述"/>
+
+            <!-- 数据变更 -->
+            <column name="change_data" type="json" remarks="数据变更内容"/>
+
+            <!-- 请求及响应 -->
+            <column name="request_body" type="text" remarks="请求内容"/>
+            <column name="response_body" type="text" remarks="响应内容"/>
+
+            <!-- 入库时间 -->
+            <column name="created_at" type="timestamp" remarks="入库时间"/>
+        </createTable>
+    </changeSet>
+    
+</databaseChangeLog>

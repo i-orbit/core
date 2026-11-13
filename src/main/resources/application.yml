@@ -1,44 +1,57 @@
 spring:
-    application:
-        name: core
-    profiles:
-        active: dev
-    cloud:
-        compatibility-verifier:
-            enabled: false
-        nacos:
-            config:
-                server-addr: 192.168.26.160:30848
-                username: nacos
-                password: zaq1@WSX
-                namespace: DEV_H160
-                file-extension: yml
-    config:
-        import:
-            - nacos:datasource.yml
-    datasource:
-        driver-class-name: com.mysql.cj.jdbc.Driver
-        url: jdbc:mysql://${datasource.mysql.host}:${datasource.mysql.port}/${spring.application.name}?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
-        username: ${datasource.mysql.username}
-        password: ${datasource.mysql.password}
-    data:
-        redis:
-            host: ${datasource.redis.host}
-            port: ${datasource.redis.port}
-            password: ${datasource.redis.password}
-            database: 0
-            lettuce:
-                pool:
-                    max-active: 8
-                    max-idle: 8
-                    min-idle: 0
-    liquibase:
-        enabled: true
-        change-log: classpath:db/changelog/db.changelog-master.yml
+  application:
+    name: core
+  profiles:
+    active: dev
+  cloud:
+    compatibility-verifier:
+      enabled: false
+    nacos:
+      config:
+        server-addr: 192.168.26.160:30848
+        username: nacos
+        password: zaq1@WSX
+        namespace: DEV_H160
+        file-extension: yml
+  config:
+    import:
+      - nacos:datasource.yml
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${datasource.mysql.host}:${datasource.mysql.port}/${spring.application.name}?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
+    username: ${datasource.mysql.username}
+    password: ${datasource.mysql.password}
+  data:
+    redis:
+      host: ${datasource.redis.host}
+      port: ${datasource.redis.port}
+      password: ${datasource.redis.password}
+      database: 0
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yml
+  kafka:
+    bootstrap-servers: 192.168.26.161:9092,192.168.26.162:9092,192.168.26.163:9092
+    consumer:
+      group-id: operation-log-consumer
+      enable-auto-commit: false
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: com.inmaytide.orbit.**
+    listener:
+      type: batch
+      ack-mode: manual
 
 server:
-    port: 30701
+  port: 30701
 
 mybatis-plus:
-    configuration:
-        log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
