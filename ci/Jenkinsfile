@@ -69,8 +69,13 @@ pipeline {
                             "orbit/$SERVICE_NAME:$VERSION" \
                             "$HARBOR/orbit/$SERVICE_NAME:$VERSION"
 
+                        docker tag \
+                            "orbit/$SERVICE_NAME:$VERSION" \
+                            "$HARBOR/orbit/$SERVICE_NAME:latest"
+
                         echo "========== Push Image =========="
                         docker push "$HARBOR/orbit/$SERVICE_NAME:$VERSION"
+                        docker push "$HARBOR/orbit/$SERVICE_NAME:latest"
 
                         echo "========== Logout Harbor =========="
                         docker logout "$HARBOR"
