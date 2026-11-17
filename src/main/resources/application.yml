@@ -16,6 +16,7 @@ spring:
   config:
     import:
       - nacos:datasource.yml
+      - nacos:kafka.yml
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${datasource.mysql.host}:${datasource.mysql.port}/${spring.application.name}?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
@@ -36,18 +37,30 @@ spring:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.yml
   kafka:
-    bootstrap-servers: 192.168.26.161:9092,192.168.26.162:9092,192.168.26.163:9092
+    bootstrap-servers: ${kafka.bootstrap-servers}
+    producer:
+      acks: all
+      retries: 3
+      properties:
+        delivery.timeout.ms: 120000
+        request.timeout.ms: 30000
+        max.block.ms: 60000
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
     consumer:
-      group-id: operation-log-consumer
       enable-auto-commit: false
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       properties:
-        spring.json.trusted.packages: com.inmaytide.orbit.**
+        spring.json.use.type.headers: false
+        spring.json.trusted.packages: "*"
+
     listener:
       type: batch
       ack-mode: manual
+  aop:
+    proxy-target-class: true
 
 server:
   port: 30701

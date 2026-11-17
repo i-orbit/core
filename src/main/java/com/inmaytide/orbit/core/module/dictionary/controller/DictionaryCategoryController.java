@@ -36,7 +36,7 @@ public class DictionaryCategoryController {
 
     @GetMapping("{code}")
     @Operation(summary = "查询指定数据字典分类(编码)详细信息")
-    @OperationLog(operationType = OperationType.QUERY, resourceType = DictionaryItemService.RESOURCE_TYPE, retainRequestBody = true)
+    @OperationLog(operationType = OperationType.QUERY, resourceType = DictionaryItemService.RESOURCE_TYPE)
     public ResponseWrapper<DictionaryCategoryVO> getByCode(@PathVariable String code) {
         return service.getByCode(code)
                 .map(ResponseWrapper::success)

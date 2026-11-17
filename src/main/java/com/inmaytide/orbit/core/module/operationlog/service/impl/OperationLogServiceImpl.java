@@ -40,6 +40,9 @@ public class OperationLogServiceImpl implements OperationLogService {
 
     @Override
     public void batchCreate(List<OperationLog> instances) {
+        if (instances == null || instances.isEmpty()) {
+            return;
+        }
         final Instant now = Instant.now();
         instances.forEach(e -> e.setCreatedAt(now));
         repository.insert(instances);
