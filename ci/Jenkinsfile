@@ -14,6 +14,10 @@ pipeline {
         )
     }
 
+    options {
+        disableConcurrentBuilds()
+    }
+
     environment {
         SERVICE_NAME    = 'core'
     }
@@ -91,20 +95,36 @@ pipeline {
                 script {
                     sh '''#!/bin/bash
                         set -euo pipefail
-                        echo "========== Deploy Kubernetes =========="
-                        kubectl apply -k ci/k8s
-                        echo "========== Update Image =========="
-                        kubectl set image \
-                            deployment/$SERVICE_NAME \
-                            $SERVICE_NAME=$HARBOR/orbit/$SERVICE_NAME:$VERSION \
-                            -n orbit
-                        echo "========== Rollout Status =========="
-                        kubectl rollout status \
-                            deployment/$SERVICE_NAME \
-                            -n orbit \
-                            --timeout=300s
-                        echo "========== Deployment Result =========="
-                        kubectl get pods -n orbit -o wide
+                       IMAGE="$HARBOR/orbit/$SERVICE_NAME:$VERSION"
+
+                       echo "========== Deployment Configuration =========="
+                       echo "Service: $SERVICE_NAME"
+                       echo "Version: $VERSION"
+                       echo "Image: $IMAGE"
+
+                       if [ -z "$VERSION" ]; then
+                           echo "ERROR: VERSION cannot be empty"
+                           exit 1
+                       fi
+                       echo "========== Update Image Version =========="
+                       cd ci/k8s
+                       kustomize edit set image \
+                           "$HARBOR/orbit/$SERVICE_NAME=$IMAGE"
+                       echo "========== Preview Kubernetes Resources =========="
+                       kubectl kustomize .
+                       echo "========== Deploy Kubernetes =========="
+                       kubectl apply -k .
+                       echo "========== Rollout Status =========="
+                       kubectl rollout status \
+                           deployment/$SERVICE_NAME \
+                           -n orbit \
+                           --timeout=300s
+                       echo "========== Deployment Result =========="
+                       kubectl get pods -n orbit -o wide
+                       echo "========== Current Image =========="
+                       kubectl get deployment "$SERVICE_NAME" \
+                           -n orbit \
+                           -o jsonpath='{.spec.template.spec.containers[0].image}'
                     '''
                 }
             }

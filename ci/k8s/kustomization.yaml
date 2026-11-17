@@ -5,3 +5,7 @@ resources:
   - deployment.yaml
   - service.yaml
   - route.yaml
+
+images:
+  - name: 192.168.26.180/orbit/core
+    newTag: placeholder
