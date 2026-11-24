@@ -16,6 +16,7 @@ spring:
   config:
     import:
       - nacos:datasource.yml
+      - nacos:security.yml
       - nacos:kafka.yml
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
