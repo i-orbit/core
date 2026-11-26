@@ -11,7 +11,7 @@ import java.util.List;
  * @since 2026/11/6
  */
 @Data
-@Schema(description = "数据字典分类", name = "数据字典分类")
+@Schema(name = "数据字典分类")
 public class DictionaryCategoryVO {
 
     @Schema(description = "上级分类主键标识, 根目录为NULL")
