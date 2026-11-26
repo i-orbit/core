@@ -8,6 +8,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import tools.jackson.databind.ObjectMapper;
 
 @Configuration
 public class Oauth2ResourceServerConfiguration extends OAuth2ResourceServerConfigurationAdapter {
@@ -19,8 +20,8 @@ public class Oauth2ResourceServerConfiguration extends OAuth2ResourceServerConfi
             "/actuator/health/**"
     };
 
-    public Oauth2ResourceServerConfiguration(SecurityProperties properties) {
-        super(properties);
+    public Oauth2ResourceServerConfiguration(SecurityProperties properties, ObjectMapper objectMapper) {
+        super(properties, objectMapper);
     }
 
     @Bean
