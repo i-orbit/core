@@ -11,8 +11,8 @@ import java.util.Optional;
  */
 public interface DictionaryCategoryService {
 
-    List<DictionaryCategoryVO> listAll();
+    List<DictionaryCategoryVO> list();
 
-    Optional<DictionaryCategoryVO> getByCode(String code);
+    DictionaryCategoryVO getByCode(String code);
 
 }

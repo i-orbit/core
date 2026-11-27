@@ -49,7 +49,7 @@ public class OperationLogServiceImpl implements OperationLogService {
     }
 
     @Override
-    public PageResult<OperationLogVO> listPage(OperationLogQuery query) {
+    public PageResult<OperationLogVO> list(OperationLogQuery query) {
         LambdaQueryWrapper<OperationLog> wrapper = new LambdaQueryWrapper<>();
         SecurityUtils.getCurrentAuthenticatedUser().ifPresent(user -> wrapper.eq(OperationLog::getTenantId, user.getTenantId()));
         wrapper.orderByDesc(OperationLog::getOperatedAt);

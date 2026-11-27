@@ -4,7 +4,6 @@ import com.inmaytide.orbit.core.module.operationlog.domain.OperationLogQuery;
 import com.inmaytide.orbit.core.module.operationlog.domain.OperationLogVO;
 import com.inmaytide.orbit.core.module.operationlog.service.OperationLogService;
 import com.inmaytide.orbit.framework.core.domain.dto.PageResult;
-import com.inmaytide.orbit.framework.core.domain.dto.ResponseWrapper;
 import com.inmaytide.orbit.framework.log.OperationType;
 import com.inmaytide.orbit.framework.log.annotation.OperationLog;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,8 +31,8 @@ public class OperationLogController {
     @GetMapping
     @Operation(summary = "分页查询操作日志列表")
     @OperationLog(operationType = OperationType.QUERY, resourceType = OperationLogService.RESOURCE_TYPE)
-    public ResponseWrapper<PageResult<OperationLogVO>> listPage(@ModelAttribute OperationLogQuery query) {
-        return ResponseWrapper.success(service.listPage(query));
+    public PageResult<OperationLogVO> list(@ModelAttribute OperationLogQuery query) {
+        return service.list(query);
     }
 
 }

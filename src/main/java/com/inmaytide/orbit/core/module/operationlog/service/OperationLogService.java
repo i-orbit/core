@@ -20,6 +20,6 @@ public interface OperationLogService {
 
     void batchCreate(List<OperationLog> instances);
 
-    PageResult<OperationLogVO> listPage(OperationLogQuery query);
+    PageResult<OperationLogVO> list(OperationLogQuery query);
 
 }
